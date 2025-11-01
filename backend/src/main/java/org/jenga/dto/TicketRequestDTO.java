@@ -16,6 +16,7 @@ public class TicketRequestDTO {
     private TicketStatus status;
     private String projectName;
     private String assignee;
+    private String reporter;
     private List<String> labels;
     private List<AcceptanceCriteriaRequestDTO> acceptanceCriteria;
     private List<Long> relatedTicketsIds;

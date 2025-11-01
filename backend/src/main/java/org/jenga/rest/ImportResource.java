@@ -9,7 +9,9 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.jenga.dto.GitHubIssueDTO;
-import org.jenga.dto.ImportReportDTO; 
+import org.jenga.dto.ImportReportDTO;
+import org.jenga.dto.TicketRequestDTO;
+import org.jenga.dto.TicketResponseDTO;
 import org.jenga.service.ImportService; 
 
 import java.util.List;
@@ -29,6 +31,17 @@ public class ImportResource {
                 List<GitHubIssueDTO> githubIssues) { 
 
         ImportReportDTO report = importService.importFromGitHub(projectId, githubIssues);
+        
+        return Response.ok(report).build();
+    }
+
+    @POST
+    @Path("/{projectId}/import")
+    public Response importFromJenga(
+                @PathParam("projectId") String projectId, 
+                List<TicketRequestDTO> jengaIssues) { 
+
+        ImportReportDTO report = importService.importFromJenga(projectId, jengaIssues);
         
         return Response.ok(report).build();
     }
