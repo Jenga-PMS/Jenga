@@ -1,0 +1,31 @@
+FROM maven:3.9-eclipse-temurin-21
+
+
+WORKDIR /app
+#ENV LANGUAGE='en_US:en'
+
+#caching dependency downloads --> faster rebuild later on
+COPY mvnw pom.xml ./
+COPY .mvn/wrapper/ .mvn/wrapper/
+
+
+ENV MAVEN_OPTS="-Dmaven.repo.local=/app/.m2"
+# Download dependencies (cached in Docker layer)
+#prefetching libs without building app
+#ENV HOME=/root
+RUN mvn dependency:go-offline
+
+
+COPY . .
+
+#Expose Port 8080 for defautl communication, 5005 for debug
+EXPOSE 8080 5005
+
+
+#no switch to nonroot user --> mvn may need rootaccess
+#USER 185
+
+
+#third command binds Quarkus to all network interfaces --> access from outside the container
+CMD ["./mvnw", "quarkus:dev", "-Dquarkus.http.host=0.0.0.0"]
+#mvnw quarkus:dev
