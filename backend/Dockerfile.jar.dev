@@ -1,0 +1,29 @@
+# ===== STAGE 1: Build =====
+FROM maven:3.9-eclipse-temurin-21 AS build
+
+WORKDIR /app
+
+# Copy only files needed for dependency resolution first (for caching)
+COPY mvnw pom.xml ./
+COPY .mvn/wrapper .mvn/wrapper
+
+RUN ./mvnw dependency:go-offline
+
+# Copy the entire source
+COPY . .
+
+# Build the project (normal or native)
+RUN ./mvnw package -DskipTests
+
+# ===== STAGE 2: Runtime =====
+FROM eclipse-temurin:21-jre 
+
+WORKDIR /app
+
+# Copy the built runner jar from previous stage
+COPY --from=build /app/target/*-runner.jar app.jar
+
+EXPOSE 8080
+
+# Run Quarkus as a JAR — not in dev mode
+ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -1,5 +1,14 @@
-*
-!target/*-runner
-!target/*-runner.jar
-!target/lib/*
-!target/quarkus-app/*
+# ignore target
+target/
+
+# include files needed for dev build
+!pom.xml
+!mvnw
+!.mvn/wrapper/
+
+
+#*
+#!target/*-runner
+#!target/*-runner.jar
+#!target/lib/*
+#!target/quarkus-app/*

@@ -1,29 +1,117 @@
+#version: "3.11"
+##parent compose file
 services:
-  postgres:
-    image: postgres
-    container_name: postgresql
-    restart: "no"
+
+  litellm:
+    container_name: litellm
+    image: ghcr.io/berriai/litellm:main-stable
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "4000:4000"
+    build:
+      context: .
+      args:
+        target: runtime
+    environment:
+      DATABASE_URL: postgresql://dbuser:dbpassword@db:5432/litellm_db
+      STORE_MODEL_IN_DB: "True"
+    #env_file:
+    #  - ./litellm/.env
+    #volumes:
+    #  - ./litellm/config.yaml/config.yml:/app/config.yaml/config.yml
+    #mount host volume to container
+    command: ["--config", "/app/config.yaml/config.yml", "--detailed_debug"]
+    #indicates to use configuration file at mount location
+    networks:
+      - openai-network
+
+
+
+#backend
+  backend: 
+    image: quarkus-backend:latest
+    container_name: jenga-backend
+    depends_on:
+      - db
+    environment:
+      QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://db:5432/backend_db
+      QUARKUS_DATASOURCE_USERNAME: dbuser
+      QUARKUS_DATASOURCE_PASSWORD: dbpassword
+    ports: 
+      - "8080:8080"
+    networks:
+      - openai-network
+
+
+
+  db:
+    container_name: db
+    #changed to db from litellm-db
+    image: postgres:latest
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U dbuser" ]
+      #interval: 1s
+      #timeout: 3s
+      #retries: 5
+      #start_period: 10s
+    environment:
+      POSTGRES_DB: db
+      #changed to db-server from litellm
+      POSTGRES_USER: dbuser
+      #changed to dbuser from llmproxy
+      POSTGRES_PASSWORD: dbpassword
+      #POSTGRES_MULTIPLE_DATABASES: backend_db, frontend_db
+      #changed to dbpassword from dbpassword9090
+      #PGDATA: ~/Users/li/Documents/Volumes/PostgreSQL/allVolumes
     ports:
       - "5432:5432"
-    environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
+    networks:
+      - openai-network
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql
+      - ./init-dbs.sql:/docker-entrypoint-initdb.d/init-dbs.sql
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    environment:
+      DATABASE_URL: postgresql://dbuser:dbpassword@db:5432/prometheus_db
+    networks:
+      - openai-network
+        
 
   pgadmin:
+    container_name: pgadmin4_container
     image: dpage/pgadmin4
-    container_name: pgadmin
-    restart: "no"
+    restart: always
     ports:
       - "8888:80"
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@test.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-      PGADMIN_CONFIG_ENABLE_PSQL: "True"
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: geheim
+    networks:
+      - openai-network
     volumes:
-      - pgadmin_data:/var/lib/pgadmin
+      - pgadmin-data:/var/lib/pgadmin2
+      #changed to pgadmin2
 
+
+
+
+# Define networks
+networks:
+  openai-network:
+    driver: bridge
+
+# Define volumes
 volumes:
-  postgres_data:
-  pgadmin_data:
+  open-webui:
+  litellm:
+  pgadmin-data:
+  postgres-data:
+    driver: local
