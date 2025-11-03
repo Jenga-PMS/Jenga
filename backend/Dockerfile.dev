@@ -1,6 +1,5 @@
-FROM maven:3.9-eclipse-temurin-21
-
-
+# ===== STAGE 1: Build =====
+FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /app
 #ENV LANGUAGE='en_US:en'
 
@@ -8,24 +7,33 @@ WORKDIR /app
 COPY mvnw pom.xml ./
 COPY .mvn/wrapper/ .mvn/wrapper/
 
-
-ENV MAVEN_OPTS="-Dmaven.repo.local=/app/.m2"
+#ENV MAVEN_OPTS="-Dmaven.repo.local=/app/.m2"
 # Download dependencies (cached in Docker layer)
 #prefetching libs without building app
 #ENV HOME=/root
 RUN mvn dependency:go-offline
-
-
+#RUN ./mvnw clean package 
 COPY . .
 
+# Build the project (normal or native)
+RUN ./mvnw package -DskipTests -Ddebug=false
+
+
+# ===== STAGE 2: Runtime =====
+FROM eclipse-temurin:21-jre AS runtime
+WORKDIR /app
+
+# Copy the built runner jar from previous stage
+COPY --from=build /app/target/*-runner.jar app.jar
+
+# Run Quarkus as a JAR — not in dev mode
+ENTRYPOINT ["java", "-jar", "app.jar"]
 #Expose Port 8080 for defautl communication, 5005 for debug
 EXPOSE 8080 5005
 
-
 #no switch to nonroot user --> mvn may need rootaccess
 #USER 185
-
-
 #third command binds Quarkus to all network interfaces --> access from outside the container
 CMD ["./mvnw", "quarkus:dev", "-Dquarkus.http.host=0.0.0.0"]
+
 #mvnw quarkus:dev

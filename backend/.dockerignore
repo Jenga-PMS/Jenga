@@ -1,5 +1,5 @@
 # ignore target
-target/
+#target/
 
 # include files needed for dev build
 !pom.xml

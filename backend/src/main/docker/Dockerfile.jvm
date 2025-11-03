@@ -98,3 +98,4 @@ ENTRYPOINT [ "/opt/jboss/container/java/run/run-java.sh" ]
 
 #COMMAND ["mvnw", "quarkus:dev"]
 #mvnw quarkus:dev
+
