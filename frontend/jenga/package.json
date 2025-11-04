@@ -8,7 +8,8 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "gen:api": "npx openapi-typescript-codegen --input http://localhost:8080/openapi --output ./src/api --client fetch"
+    "gen:api": "npx openapi-typescript-codegen --input http://localhost:8080/openapi --output ./src/api --client fetch",
+    "generate-api": "openapi-generator-cli generate -i src/api/openapi.json -g typescript-fetch -o src/api/generated"
   },
   "license": "MIT",
   "devDependencies": {

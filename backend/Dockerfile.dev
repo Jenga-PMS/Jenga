@@ -41,4 +41,6 @@ EXPOSE 8080 5005
 # and bind Quarkus to all network interfaces
 #ENTRYPOINT ["java", "-jar", "app.jar"]
 #CMD ["-Dquarkus.http.host=0.0.0.0", "-Dquarkus.mcp.server.stdio.enabled=false"]
-CMD ["./mvnw", "quarkus:dev", "-Dquarkus.http.host=0.0.0.0"]
+#CMD ["./mvnw", "quarkus:dev", "-Dquarkus.http.host=0.0.0.0"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
+CMD ["-Dquarkus.http.host=0.0.0.0", "-Dquarkus.mcp.server.stdio.enabled=false"]

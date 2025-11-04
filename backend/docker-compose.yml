@@ -28,6 +28,42 @@ services:
       - openai-network
 
 
+  frontend:
+    container_name: jenga-frontend
+    build:
+      context: ./frontend/jenga
+      dockerfile: Dockerfile
+    depends_on:
+      backend:
+        condition: service_healthy
+    command: >
+      sh -c "
+        echo 'Waiting for backend...' &&
+        until curl -s http://backend:8080/openapi > /dev/null; do sleep 2; done &&
+        echo 'Fetching OpenAPI spec from backend...' &&
+        curl -s http://backend:8080/openapi -o src/api/openapi.json &&
+        echo 'Generating API client...' &&
+        npm run generate-api &&
+        echo 'Starting dev server...' &&
+        npm run dev
+      "
+      sh -c "
+        apk add --no-cache curl >/dev/null 2>&1 || true &&
+        mkdir -p src/api &&
+        echo 'Waiting for backend...' &&
+        until curl -s http://backend:8080/q/openapi > /dev/null; do sleep 2; done &&
+        echo 'Fetching OpenAPI spec from backend...' &&
+        curl -s http://backend:8080/q/openapi -o src/api/openapi.json &&
+        echo 'Generating API client...' &&
+        npm run generate-api &&
+        echo 'Starting dev server...' &&
+        npm run dev
+      "
+    ports:
+      - "5173:5173"
+    networks:
+      - openai-network
+
 
 #backend
   backend: 
