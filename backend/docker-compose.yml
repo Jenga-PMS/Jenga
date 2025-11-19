@@ -38,22 +38,22 @@ services:
         condition: service_healthy
     command: >
       sh -c "
-        echo 'Waiting for backend...' &&
-        until curl -s http://backend:8080/openapi > /dev/null; do sleep 2; done &&
-        echo 'Fetching OpenAPI spec from backend...' &&
-        curl -s http://backend:8080/openapi -o src/api/openapi.json &&
-        echo 'Generating API client...' &&
-        npm run generate-api &&
-        echo 'Starting dev server...' &&
-        npm run dev
-      "
-      sh -c "
         apk add --no-cache curl >/dev/null 2>&1 || true &&
         mkdir -p src/api &&
         echo 'Waiting for backend...' &&
         until curl -s http://backend:8080/q/openapi > /dev/null; do sleep 2; done &&
         echo 'Fetching OpenAPI spec from backend...' &&
         curl -s http://backend:8080/q/openapi -o src/api/openapi.json &&
+        echo 'Generating API client...' &&
+        npm run generate-api &&
+        echo 'Starting dev server...' &&
+        npm run dev
+      "
+      sh -c "
+        echo 'Waiting for backend...' &&
+        until curl -s http://backend:8080/openapi > /dev/null; do sleep 2; done &&
+        echo 'Fetching OpenAPI spec from backend...' &&
+        curl -s http://backend:8080/openapi -o src/api/openapi.json &&
         echo 'Generating API client...' &&
         npm run generate-api &&
         echo 'Starting dev server...' &&
@@ -66,9 +66,16 @@ services:
 
 
 #backend
+#healthcheck add dependency to pom.xml
   backend: 
     image: quarkus-backend:latest
     container_name: jenga-backend
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/q/health/ready || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     depends_on:
       - db
     environment:
@@ -89,10 +96,10 @@ services:
     restart: always
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U dbuser" ]
-      #interval: 1s
-      #timeout: 3s
-      #retries: 5
-      #start_period: 10s
+      interval: 1s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
     environment:
       POSTGRES_DB: db
       #changed to db-server from litellm

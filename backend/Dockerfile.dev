@@ -42,5 +42,6 @@ EXPOSE 8080 5005
 #ENTRYPOINT ["java", "-jar", "app.jar"]
 #CMD ["-Dquarkus.http.host=0.0.0.0", "-Dquarkus.mcp.server.stdio.enabled=false"]
 #CMD ["./mvnw", "quarkus:dev", "-Dquarkus.http.host=0.0.0.0"]
-ENTRYPOINT ["java", "-jar", "app.jar"]
-CMD ["-Dquarkus.http.host=0.0.0.0", "-Dquarkus.mcp.server.stdio.enabled=false"]
+#ENTRYPOINT ["java", "-jar", "app.jar"]
+#CMD ["-Dquarkus.http.host=0.0.0.0", "-Dquarkus.mcp.server.stdio.enabled=false"]
+ENTRYPOINT ["java", "-Dquarkus.http.host=0.0.0.0", "-Dquarkus.mcp.server.stdio.enabled=false", "-jar", "app.jar"]

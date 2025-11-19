@@ -1,0 +1,55 @@
+ARG NODE_VERSION=20
+FROM node:${NODE_VERSION}-alpine AS build
+
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+
+
+
+FROM nginx:1.27-alpine AS runtime
+COPY --from=build /app/dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+
+
+
+
+
+
+
+
+
+
+
+
+FROM node:18-alpine
+# Set working directory
+WORKDIR /app
+
+# Install dependencies
+COPY package*.json ./
+RUN npm install
+
+# Install curl and OpenAPI generator CLI globally
+RUN apk add --no-cache curl
+RUN npm install -g @openapitools/openapi-generator-cli
+
+# Copy source code
+COPY . .
+
+# Generate API client during build time
+# assuming backend container is running and accessible at build time.
+# If not, you might need to copy a pre-generated openapi.json instead.
+# Alternatively, you can skip this if backend is not available during build.
+# RUN curl -sf http://backend:8080/openapi -o src/api/openapi.json
+# RUN openapi-generator-cli generate -i src/api/openapi.json -g typescript-fetch -o src/api/generated
+
+# Expose dev server port
+EXPOSE 5173
+
+# Start dev server
+CMD ["npm", "run", "dev"]
