@@ -5,8 +5,8 @@ import org.jenga.db.LabelRepository;
 import org.jenga.model.Project;
 import org.jenga.model.Ticket;
 import org.jenga.model.Label;
-import org.jenga.dto.ProjectDTO;
-import org.jenga.dto.CreateProjectDTO;
+import org.jenga.dto.ProjectRequestDTO;
+import org.jenga.dto.ProjectResponseDTO;
 import org.jenga.dto.LabelDTO;
 import org.jenga.mapper.ProjectMapper;
 import org.jenga.mapper.LabelMapper;
@@ -41,8 +41,8 @@ public class ProjectService {
     }
 
     @Transactional
-    public void create(CreateProjectDTO createProjectDTO) {
-        String identifier = createProjectDTO.getIdentifier();
+    public ProjectResponseDTO create(ProjectRequestDTO projectRequestDTO) {
+        String identifier = projectRequestDTO.getIdentifier();
 
         if (identifier == null || identifier.trim().isEmpty()) {
             throw new BadRequestException("Project identifier cannot be empty");
@@ -69,18 +69,20 @@ public class ProjectService {
             throw new BadRequestException("Project already exists with this identifier");
         }
 
-        Project project = projectMapper.createProjectDTOToProject(createProjectDTO);
+        Project project = projectMapper.createProjectDTOToProject(projectRequestDTO);
 
         projectRepository.persist(project);
+
+        return projectMapper.projectToProjectDTO(project);
     }
 
-    public List<ProjectDTO> findAll() {
+    public List<ProjectResponseDTO> findAll() {
         return projectRepository.findAll().stream()
                 .map(projectMapper::projectToProjectDTO)
                 .collect(Collectors.toList());
     }
 
-    public ProjectDTO findById(String projectId) {
+    public ProjectResponseDTO findById(String projectId) {
         Project project = projectRepository.findById(projectId);
         if (project == null) {
             throw new NotFoundException("Project not found with ID: " + projectId);
@@ -89,17 +91,18 @@ public class ProjectService {
     }
 
     @Transactional
-    public void update(String projectId, ProjectDTO projectDTO) {
+    public ProjectResponseDTO update(String projectId, ProjectRequestDTO projectRequestDTO) {
         Project existing = projectRepository.findById(projectId);
         if (existing == null) {
             throw new NotFoundException("Project not found with ID: " + projectId);
         }
 
-        existing.setId(projectDTO.getIdentifier());
-        existing.setName(projectDTO.getName());
-        existing.setDescription(projectDTO.getDescription());
+        existing.setId(projectRequestDTO.getIdentifier());
+        existing.setName(projectRequestDTO.getName());
+        existing.setDescription(projectRequestDTO.getDescription());
 
         projectRepository.persist(existing);
+        return projectMapper.projectToProjectDTO(existing);
     }
 
     @Transactional
@@ -113,7 +116,7 @@ public class ProjectService {
     }
 
     @Transactional
-    public void createLabel(String projectId, LabelDTO labelDTO) {
+    public LabelDTO createLabel(String projectId, LabelDTO labelDTO) {
         Project project = projectRepository.findById(projectId);
         if (project == null) {
             throw new NotFoundException("Project not found with ID: " + projectId);
@@ -131,6 +134,7 @@ public class ProjectService {
         Label label = labelMapper.labelDTOToLabel(labelDTO);
         label.setProject(project);
         labelRepository.persist(label);
+        return labelMapper.labelToLabelDTO(label);
     }
 
     private boolean isValidHexColor(String color) {
@@ -157,5 +161,5 @@ public class ProjectService {
         } else {
             throw new NotFoundException("Label not found");
         }
-}
+    }
 }

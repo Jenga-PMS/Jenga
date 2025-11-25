@@ -1,18 +1,21 @@
 import { FormControl, InputLabel, MenuItem, Select, Stack, TextField } from "@suid/material"
 import { For } from "solid-js"
-import { TicketDTO, TicketPriority, TicketSize, TicketStatus } from "../api"
-
+import { TicketResponseDTO, TicketPriority, TicketSize, TicketStatus } from "../api"
+import { InfoMode } from "../utils/utils"
 interface TicketInfoProps {
-    ticket: TicketDTO
-    onTicketChange: (next: TicketDTO) => void
-    onSubmit?: (next: TicketDTO) => void
+    mode: InfoMode
+    ticket: TicketResponseDTO
+    onTicketChange: (next: TicketResponseDTO) => void
+    onSubmit?: (next: TicketResponseDTO) => void
     formId?: string
 }
 
 export const TicketInfo = (props: TicketInfoProps) => {
     const formId = props.formId ?? "ticket-info-form"
 
-    const updateTicket = <K extends keyof TicketDTO>(key: K, value: TicketDTO[K]) => {
+    const isReadOnly = props.mode === InfoMode.ReadOnly
+
+    const updateTicket = <K extends keyof TicketResponseDTO>(key: K, value: TicketResponseDTO[K]) => {
         const updatedTicket = { ...props.ticket, [key]: value }
         props.onTicketChange(updatedTicket)
     }
@@ -32,6 +35,7 @@ export const TicketInfo = (props: TicketInfoProps) => {
                     value={props.ticket.title ?? ""}
                     onChange={(_, value) => updateTicket("title", value)}
                     required
+                    disabled={isReadOnly}
                 />
                 <TextField
                     name="description"
@@ -40,12 +44,14 @@ export const TicketInfo = (props: TicketInfoProps) => {
                     onChange={(_, value) => updateTicket("description", value)}
                     rows={5}
                     multiline
+                    disabled={isReadOnly}
                 />
                 <TextField
                     name="assignee"
                     label="assignee"
-                    value={props.ticket.assigneeName ?? ""}
-                    onChange={(_, value) => updateTicket("assigneeName", value)}
+                    value={props.ticket.assignee ?? ""}
+                    onChange={(_, value) => updateTicket("assignee", value)}
+                    disabled={isReadOnly}
                 />
                 <FormControl fullWidth>
                     <InputLabel id={`${formId}-priority-label`}>Priority</InputLabel>
@@ -54,6 +60,7 @@ export const TicketInfo = (props: TicketInfoProps) => {
                         value={props.ticket.priority ?? TicketPriority.MEDIUM}
                         label="Priority"
                         onChange={(event) => updateTicket("priority", event.target.value as TicketPriority)}
+                        disabled={isReadOnly}
                     >
                         <For each={Object.values(TicketPriority)}>
                             {(priority) => (
@@ -69,6 +76,7 @@ export const TicketInfo = (props: TicketInfoProps) => {
                         value={props.ticket.size ?? TicketSize.MEDIUM}
                         label="Size"
                         onChange={(event) => updateTicket("size", event.target.value as TicketSize)}
+                        disabled={isReadOnly}
                     >
                         <For each={Object.values(TicketSize)}>
                             {(size) => (
@@ -84,6 +92,7 @@ export const TicketInfo = (props: TicketInfoProps) => {
                         value={props.ticket.status ?? TicketStatus.OPEN}
                         label="Status"
                         onChange={(event) => updateTicket("status", event.target.value as TicketStatus)}
+                        disabled={isReadOnly}
                     >
                         <For each={Object.values(TicketStatus)}>
                             {(status) => (

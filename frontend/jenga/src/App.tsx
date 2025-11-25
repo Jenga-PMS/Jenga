@@ -7,6 +7,7 @@ import logo from "../assets/Logo.png"
 import { Auth } from './components/Auth';
 import { Sidebar } from './components/Sidebar';
 import { Menu } from '@suid/icons-material';
+import { Footer } from './components/Footer';
 
 const theme = createTheme()
 
@@ -45,6 +46,7 @@ const App = (props: AppProps) => {
                   {props.children}
                 </Box>
               </Stack>
+              <Footer></Footer>
             </ProjectProvider>
           </UserProvider>
         </AuthProvider>

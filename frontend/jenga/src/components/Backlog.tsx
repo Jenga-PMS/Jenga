@@ -1,12 +1,12 @@
 import { Add } from "@suid/icons-material"
 import { Card, CardHeader, CardContent, List, ListItem, ListItemButton, ListItemText, CardActions, IconButton, ListItemAvatar, Avatar } from "@suid/material"
 import { useContext, createSignal, For } from "solid-js"
-import { TicketDTO } from "../api"
+import { TicketResponseDTO } from "../api"
 import { ProjectContext } from "../provider/ProjectProvider"
 import { NewTicketDialog } from "./NewTicketDialog"
 
 interface BacklogItemProps {
-    ticket: TicketDTO
+    ticket: TicketResponseDTO
 }
 
 const BacklogItem = (props: BacklogItemProps) => {
@@ -28,14 +28,14 @@ const BacklogItem = (props: BacklogItemProps) => {
                 </ListItemAvatar>
                 <ListItemText
                     primary={props.ticket.title}
-                    secondary={`reporter: ${props.ticket.reporterName} assignee: ${props.ticket.assigneeName}`} />
+                    secondary={`reporter: ${props.ticket.reporter} assignee: ${props.ticket.assignee}`} />
             </ListItemButton>
         </ListItem>
     )
 }
 
 interface BacklogProps {
-    tickets?: TicketDTO[]
+    tickets?: TicketResponseDTO[]
 }
 
 export const Backlog = (props: BacklogProps) => {
@@ -58,7 +58,7 @@ export const Backlog = (props: BacklogProps) => {
                     </List>
                 </CardContent>
                 <CardActions>
-                    <IconButton onClick={() => setOpen(true)}>
+                    <IconButton onClick={() => setOpen(true)} disabled={!pCtx?.selectedProject()}>
                         <Add></Add>
                     </IconButton>
                 </CardActions>

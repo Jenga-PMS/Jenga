@@ -9,6 +9,7 @@ import { Sprint } from './pages/Sprint';
 import { Home } from './pages/Home';
 import { About } from './pages/About';
 import { Profile } from './pages/Profile';
+import { Privacy } from './pages/Privacy';
 
 const root = document.getElementById('root');
 
@@ -26,6 +27,7 @@ render(
         <Route path={"Profile"} component={Profile}></Route>
         <Route path={"Sprint"} component={Sprint}></Route>
         <Route path={"About"} component={About}></Route>
+        <Route path={"Privacy"} component={Privacy}></Route>
       </Route>
     </Router>
   ),

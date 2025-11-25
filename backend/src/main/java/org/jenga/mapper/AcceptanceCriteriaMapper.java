@@ -1,7 +1,7 @@
 package org.jenga.mapper;
 
-import org.jenga.dto.AcceptanceCriteriaRequest;
-import org.jenga.dto.AcceptanceCriteriaResponse;
+import org.jenga.dto.AcceptanceCriteriaRequestDTO;
+import org.jenga.dto.AcceptanceCriteriaResponseDTO;
 import org.jenga.model.AcceptanceCriteria;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -11,7 +11,7 @@ public interface AcceptanceCriteriaMapper {
 
     AcceptanceCriteriaMapper INSTANCE = Mappers.getMapper(AcceptanceCriteriaMapper.class);
 
-    AcceptanceCriteria toEntity(AcceptanceCriteriaRequest request);
+    AcceptanceCriteria toEntity(AcceptanceCriteriaRequestDTO request);
 
-    AcceptanceCriteriaResponse toResponse(AcceptanceCriteria entity);
+    AcceptanceCriteriaResponseDTO toResponse(AcceptanceCriteria entity);
 }

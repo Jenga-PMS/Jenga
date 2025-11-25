@@ -37,6 +37,25 @@ If you want to build an _über-jar_, execute the following command:
 
 The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
 
+### JWT Keypair Setup
+
+For JWT authentication, a **keypair** (private and public keys) must be generated and stored under the following locations, when not running in dev mode:
+
+* `src/main/resources/privateKey.pem`
+* `src/main/resources/publicKey.pem`
+
+You can generate the keypair using the following commands:
+
+```shell script
+# Generate the private key
+openssl genrsa -out privateKey.pem 2048 
+
+# Generate the public key from the private key
+openssl rsa -in privateKey.pem -pubout -out publicKey.pem
+```
+
+Ensure that these files are correctly placed in the `src/main/resources` directory before running or packaging the application.
+
 ## Creating a native executable
 
 You can create a native executable using:
@@ -55,7 +74,7 @@ You can then execute your native executable with: `./target/jenga-0.0.1-SNAPSHOT
 
 <br>
 
-## Configuring Quarkus Langchain4j with Gemini
+# Configuring Quarkus Langchain4j with Gemini
 
 To run Langchain4j with the Gemini model in your Quarkus application, you need to configure your API key and model properties.
 
@@ -86,6 +105,48 @@ quarkus.langchain4j.ai.gemini.api-key=${QUARKUS_LANGCHAIN4J_AI_GEMINI_API_KEY:}
 # Set the desired chat model.
 # This value can be changed to any other supported Gemini model.
 quarkus.langchain4j.ai.gemini.chat-model.model-id=gemini-1.5-flash
+```
+
+Here is the new section for your README, formatted to match your existing file:
+
+# Configuring the Google Web Search Tool
+
+This setup is required to enable the `WebSearchTool`, which allows the AI to perform live web searches using the Google Custom Search Engine (CSE) API.
+
+### 1. Get Google API Key and Search Engine ID
+
+You will need two pieces of information from Google:
+
+* **API Key:** This is a standard API key from your [Google Cloud Console](https://console.cloud.google.com/apis/credentials). You must ensure the **"Custom Search API"** is enabled for your project.
+* **Search Engine ID (cse.id):** This ID connects your API key to a specific search configuration.
+    1.  Go to the [Google Programmable Search Engine control panel](https://programmablesearchengine.google.com/controlpanel/all).
+    2.  Click **Add** to create a new search engine.
+    3.  In the "What to search?" section, select the option to **"Search the entire web"**.
+    4.  After creation, go to the "Setup" tab and copy your **"Search engine ID"**.
+
+### 2. Set Environment Variables (in `.env`)
+
+Add your two new credentials to the `.env` file at the project root. This file is loaded by Quarkus and keeps your secrets out of the code.
+
+**`.env`**
+
+```dotenv
+# Google Custom Search Credentials
+GOOGLE_API_KEY=your-actual-api-key-goes-here
+GOOGLE_CSE_ID=your-actual-search-engine-id-goes-here
+````
+
+### 3\. Configure `application.properties`
+
+Finally, add the following to your `application.properties` file. This tells the Quarkus REST Client the API's URL and tells your `WebSearchTool` to read its credentials from the environment. By default this is already set up.
+
+**`src/main/resources/application.properties`**
+
+```properties
+quarkus.rest-client.google-search-api.url=https://www.googleapis.com
+
+google.api.key=${GOOGLE_API_KEY}
+google.cse.id=${GOOGLE_CSE_ID}
 ```
 
 # How to Export GitHub Issues

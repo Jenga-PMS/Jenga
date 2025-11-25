@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import lombok.Data;
 
 @Data
-public class ProjectDTO {
+public class ProjectResponseDTO {
     private String identifier;
     private String name;
     private String description;

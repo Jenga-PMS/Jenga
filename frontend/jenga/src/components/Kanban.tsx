@@ -1,10 +1,10 @@
 import { TableRow, TableCell, Card, CardHeader, CardContent, TableContainer, Paper, Table, TableHead, TableBody, ListItem, List, ListItemButton } from "@suid/material"
 import { useContext, createMemo, For } from "solid-js"
-import { TicketDTO, TicketStatus } from "../api"
+import { TicketResponseDTO, TicketStatus } from "../api"
 import { ProjectContext } from "../provider/ProjectProvider"
 
 interface KanbanItemProps {
-    ticket: TicketDTO
+    ticket: TicketResponseDTO
 }
 
 const KanbanItem = (props: KanbanItemProps) => {
@@ -30,7 +30,7 @@ const KanbanItem = (props: KanbanItemProps) => {
 
 
 interface KanbanCellProps {
-    tickets?: TicketDTO[]
+    tickets?: TicketResponseDTO[]
     status: TicketStatus
     username: string
 }
@@ -52,13 +52,13 @@ const StatusCell = (props: KanbanCellProps) => {
                 if (!ticket) return
 
                 const statusUnchanged = ticket.status === props.status
-                const assigneeUnchanged = ticket.assigneeName === props.username
+                const assigneeUnchanged = ticket.assignee === props.username
                 if (statusUnchanged && assigneeUnchanged) return
 
                 const projectId = pCtx?.selectedProject()?.identifier
                 if (!projectId) return
 
-                const updated: TicketDTO = { ...ticket, status: props.status, assigneeName: props.username }
+                const updated: TicketResponseDTO = { ...ticket, status: props.status, assignee: props.username }
                 pCtx?.setTickets((prev) => prev?.map((entry) => (entry.id === ticketId ? updated : entry)) ?? prev)
                 if (pCtx?.selectedTicket()?.id === ticketId) pCtx?.setSelectedTicket(() => updated)
                 void pCtx?.updateTicket(projectId, updated)
@@ -77,7 +77,7 @@ const StatusCell = (props: KanbanCellProps) => {
 
 interface RowProps {
     dev: string
-    tickets?: TicketDTO[]
+    tickets?: TicketResponseDTO[]
 }
 
 const Row = (props: RowProps) => {
@@ -99,7 +99,7 @@ export const Kanban = () => {
     const pCtx = useContext(ProjectContext)
 
     const tickets = createMemo(() =>
-        Map.groupBy(pCtx?.tickets() ?? [], t => t.assigneeName ?? "")
+        Map.groupBy(pCtx?.tickets() ?? [], t => t.assignee ?? "")
     )
 
     return (

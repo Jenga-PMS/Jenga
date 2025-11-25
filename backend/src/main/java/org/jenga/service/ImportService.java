@@ -9,6 +9,9 @@ import org.jenga.db.UserRepository;
 import org.jenga.db.LabelRepository;
 import org.jenga.dto.GitHubIssueDTO;
 import org.jenga.dto.ImportReportDTO;
+
+import org.jenga.model.AcceptanceCriteria;
+import org.jenga.dto.TicketRequestDTO;
 import org.jenga.model.Label;
 import org.jenga.model.Project;
 import org.jenga.model.Ticket;
@@ -53,9 +56,46 @@ public class ImportService {
                 Ticket ticket = new Ticket();
                 ticket.setProject(project);
                 ticket.setTitle(githubDto.getTitle());
-                ticket.setDescription(githubDto.getBody()); // TODO: Parse individual parameters (Body = Specification + Acceptance Criteria + Relationships), blocked by implementation in Ticket
-                ticket.setReporter(reporter);
 
+                String body = githubDto.getBody();
+                List<AcceptanceCriteria> acceptanceCriteria = new ArrayList<>();
+                List<String> descriptionLines = new ArrayList<>(); 
+
+                if (body != null && !body.isEmpty()) {
+                    String[] lines = body.split("\\r?\\n");
+
+                    for (String line : lines) {
+                        String trimmedLine = line.trim();
+
+                        if (trimmedLine.startsWith("- [ ] ") || trimmedLine.startsWith("- [x] ")) {
+                            boolean isCompleted = trimmedLine.startsWith("- [x] ");
+                            
+                            if (trimmedLine.length() > 6) {
+                                String criteriaText = trimmedLine.substring(6).trim();
+                                
+                                if (!criteriaText.isEmpty()) {
+                                    AcceptanceCriteria ac = new AcceptanceCriteria();
+                                    
+                                    ac.setDescription(criteriaText); 
+                                    ac.setCompleted(isCompleted);
+                                    ac.setTicket(ticket);
+                                    
+                                    acceptanceCriteria.add(ac);
+                                }
+                            }
+                        } else {
+                            descriptionLines.add(line);
+                        }
+                    }
+
+                    String finalDescription = String.join("\n", descriptionLines).trim();
+                    ticket.setDescription(finalDescription);
+                    ticket.setAcceptanceCriteria(acceptanceCriteria);
+                }
+                
+                ticket.setTicketNumber(ticketRepository.findMaxTicketNumberByProject(project) + 1);
+                ticket.setReporter(reporter);
+                
                 if (githubDto.getAssignees() != null && githubDto.getAssignees().length > 0) {
                     String username = githubDto.getAssignees()[0].getLogin();
                     User assignee = userRepository.findByUsername(username);
@@ -125,5 +165,86 @@ public class ImportService {
                 System.err.println("Warning: Unrecognized status '" + githubStatusName + "'. Defaulting to OPEN.");
                 return TicketStatus.OPEN; 
         }
+    }
+
+    @Transactional
+    public ImportReportDTO importFromJenga(String projectId, List<TicketRequestDTO> ticketRequests) {
+        
+        List<String> errors = new ArrayList<>();
+        int successfulImports = 0;
+
+        Project project = projectRepository.findById(projectId);
+        if (project == null) {
+            errors.add("Project with ID " + projectId + " not found. No tickets were imported.");
+            return new ImportReportDTO(0, errors);
+        }
+
+        for (TicketRequestDTO request : ticketRequests) {
+            try {
+                Ticket ticket = new Ticket();
+
+                ticket.setTitle(request.getTitle());
+                ticket.setDescription(request.getDescription());
+                ticket.setPriority(request.getPriority());
+                ticket.setSize(request.getSize());
+                ticket.setStatus(request.getStatus()); 
+                if (request.getLabels() != null && !request.getLabels().isEmpty()) {
+                    List<Label> labelEntities = new ArrayList<>();
+                    
+                    for (String labelName : request.getLabels()) {
+                        Label label = labelRepository.find("name", labelName).firstResult();
+
+                        if (label == null) {
+                            label = new Label();
+                            label.setName(labelName);                            
+                            labelRepository.persist(label);
+                        }
+                        
+                        labelEntities.add(label);
+                    }
+
+                    ticket.setLabels(labelEntities);
+                }
+
+                ticket.setTicketNumber(ticketRepository.findMaxTicketNumberByProject(project) + 1);
+                
+                ticket.setProject(project); 
+
+                User reporter = userRepository.findByUsername(request.getReporter());
+                if (reporter == null) {
+                    throw new RuntimeException("Reporter not found: " + request.getReporter());
+                }
+                ticket.setReporter(reporter);
+
+                if (request.getAssignee() != null && !request.getAssignee().isEmpty()) {
+                    User assignee = userRepository.findByUsername(request.getAssignee());
+                    if (assignee == null) {
+                        throw new RuntimeException("Assignee not found: " + request.getAssignee());
+                    }
+                    ticket.setAssignee(assignee);
+                }
+
+                if (request.getAcceptanceCriteria() != null) {
+                    List<AcceptanceCriteria> criteriaList = request.getAcceptanceCriteria().stream()
+                        .map(dto -> {
+                            AcceptanceCriteria ac = new AcceptanceCriteria();
+                            ac.setDescription(dto.getDescription());
+                            ac.setTicket(ticket); 
+                            return ac;
+                        })
+                        .toList();
+                    ticket.setAcceptanceCriteria(criteriaList);
+                }
+
+                ticketRepository.persist(ticket);
+                successfulImports++;
+
+            } catch (Exception e) {
+                String errorMessage = "Failed to import ticket '" + request.getTitle() + "': " + e.getMessage();
+                errors.add(errorMessage);
+            }
+        }
+
+        return new ImportReportDTO(successfulImports, errors);
     }
 }

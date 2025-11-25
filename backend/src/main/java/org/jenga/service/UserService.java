@@ -39,4 +39,12 @@ public class UserService {
         List<User> users = userRepository.searchByUsernameStartsWith(usernamePart.toLowerCase());
         return users.stream().map(userMapper::userToUserDTO).collect(Collectors.toList());
     }
+
+    @Transactional
+    public List<UserDTO> findAll() {
+        List<User> users = userRepository.findAll().list(); 
+        return users.stream()
+                    .map(userMapper::userToUserDTO)
+                    .collect(Collectors.toList());
+    }
 }

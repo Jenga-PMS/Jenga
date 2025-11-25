@@ -1,10 +1,11 @@
-import { Avatar, Card, CardContent, Dialog, DialogContent, DialogTitle, IconButton, Popper, Stack, ToggleButton, ToggleButtonGroup } from "@suid/material";
+import { Avatar, Box, Card, CardContent, Dialog, DialogContent, DialogTitle, IconButton, Popper, Stack, ToggleButton, ToggleButtonGroup } from "@suid/material";
 import { Login, Logout } from "@suid/icons-material";
 import { Match, Switch, createSignal, useContext } from "solid-js";
 import { LogIn } from "./Login";
 import { Register } from "./Register";
 import { AuthContext } from "../provider/AuthProvider";
 import { UserInfo } from "./UserInfo";
+import { A } from "@solidjs/router";
 
 const enum AuthE {
     SignIn,
@@ -25,10 +26,11 @@ const LoggedIn = () => {
     return (
         <Stack direction="row">
             <IconButton
-                onClick={() => { setShowProfile(true) }}
                 onMouseEnter={() => setShowProfile(true)}
                 onMouseLeave={() => setShowProfile(false)}
                 ref={(el) => setAnchorEl(el)}
+                component={A}
+                href="/Profile"
             >
                 <Avatar></Avatar>
             </IconButton>

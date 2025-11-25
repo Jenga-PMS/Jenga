@@ -6,7 +6,7 @@ import devtools from 'solid-devtools/vite';
 export default defineConfig({
   plugins: [devtools(), solidPlugin(), suidPlugin()],
   server: {
-    port: 3000,
+    port: 7000,
     proxy: {
       '/api': {
         target: 'http://localhost:8080',

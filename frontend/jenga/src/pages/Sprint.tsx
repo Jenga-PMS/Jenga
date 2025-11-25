@@ -4,6 +4,7 @@ import { Kanban } from "../components/Kanban"
 import { Show, useContext } from "solid-js"
 import { ProjectContext } from "../provider/ProjectProvider"
 import { TicketInfo } from "../components/TicketInfo"
+import { InfoMode } from "../utils/utils"
 
 
 export const Sprint = () => {
@@ -24,6 +25,7 @@ export const Sprint = () => {
                 {(ticket) => (
                     <>
                         <TicketInfo
+                            mode={InfoMode.Edit}
                             formId={formId}
                             ticket={ticket()}
                             onTicketChange={(next) => pCtx?.setSelectedTicket(() => next)}
