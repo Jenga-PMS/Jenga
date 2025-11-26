@@ -6,6 +6,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
+import lombok.RequiredArgsConstructor;
 
 import org.jenga.dto.TicketRequestDTO;
 import org.jenga.dto.TicketResponseDTO;
@@ -17,13 +18,10 @@ import org.jenga.service.MCP_Server.ChatRequestContext;
 import java.util.List;
 
 @ApplicationScoped
+@RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class EditTicketTool {
-
-    @Inject
-    TicketService ticketService;
-
-    @Inject
-    ChatRequestContext requestContext;
+    private final TicketService ticketService;
+    private final ChatRequestContext requestContext;
 
     @Tool("Updates an existing ticket. Only fields that are provided (not null) will be changed.")
     public String editTicket(

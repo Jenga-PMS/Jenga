@@ -5,6 +5,8 @@ import dev.langchain4j.agent.tool.Tool;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+
 import org.jenga.dto.TicketResponseDTO;
 import org.jenga.dto.TicketSearchDTO;
 import org.jenga.model.TicketPriority;
@@ -15,10 +17,10 @@ import org.jenga.service.TicketService;
 import java.util.List;
 
 @ApplicationScoped
+@RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class SearchTicketTool {
 
-    @Inject
-    TicketService ticketService;
+    private final TicketService ticketService;
 
     @Tool("""
         Searches for tickets based on criteria. 

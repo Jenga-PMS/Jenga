@@ -5,19 +5,19 @@ import dev.langchain4j.agent.tool.P;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
+import lombok.RequiredArgsConstructor;
+
 import org.jenga.dto.TicketResponseDTO;
 import org.jenga.dto.MCP_Server.AskAboutTicketResponseDTO;
 import org.jenga.service.TicketService;
 import org.jenga.service.MCP_Server.ChatRequestContext;
 
-@ApplicationScoped 
+@ApplicationScoped
+@RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class AskAboutTicketTool {
 
-    @Inject
-    TicketService ticketService; 
-
-    @Inject
-    ChatRequestContext requestContext;
+    private final TicketService ticketService; 
+    private final ChatRequestContext requestContext;
 
     @Tool("Get information about a specific ticket. If no ticketId is provided, it uses the user's current ticket context.")
     public AskAboutTicketResponseDTO getTicketInfo(

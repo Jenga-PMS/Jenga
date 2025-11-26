@@ -5,6 +5,7 @@ import dev.langchain4j.agent.tool.Tool;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 import org.jenga.db.LabelRepository;
 import org.jenga.db.ProjectRepository;
@@ -20,18 +21,14 @@ import java.util.List;
 import java.util.Set;
 
 @ApplicationScoped
+@RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class CreateTicketTool {
 
-    @Inject
-    TicketRepository ticketRepository;
-    @Inject
-    ProjectRepository projectRepository;
-    @Inject
-    UserRepository userRepository;
-    @Inject
-    LabelRepository labelRepository;
-    @Inject
-    ChatRequestContext requestContext;
+    private final TicketRepository ticketRepository;
+    private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
+    private final LabelRepository labelRepository;
+    private final ChatRequestContext requestContext;
 
     @Tool("Creates a new software development ticket (e.g., bug, feature, task) in the specified project.")
     @Transactional 

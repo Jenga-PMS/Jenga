@@ -8,6 +8,8 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import lombok.RequiredArgsConstructor;
+
 import org.jenga.dto.GitHubIssueDTO;
 import org.jenga.dto.ImportReportDTO;
 import org.jenga.dto.TicketRequestDTO;
@@ -18,10 +20,10 @@ import java.util.List;
 @Path("/api/import")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class ImportResource {
 
-    @Inject 
-    ImportService importService; 
+    private final ImportService importService; 
 
     @POST
     @Path("/{projectId}/github")

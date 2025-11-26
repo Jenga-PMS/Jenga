@@ -3,6 +3,8 @@ package org.jenga.service;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+
 import org.jenga.db.ProjectRepository;
 import org.jenga.db.TicketRepository;
 import org.jenga.db.UserRepository;
@@ -24,18 +26,14 @@ import java.util.List;
 import java.util.Set;
 
 @ApplicationScoped
+@RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class ImportService {
 
-    @Inject
-    TicketRepository ticketRepository;
-    @Inject
-    ProjectRepository projectRepository;
-    @Inject
-    UserRepository userRepository;
-    @Inject
-    LabelRepository labelRepository;
-    @Inject
-    AuthenticationService authenticationService;
+    private final TicketRepository ticketRepository;
+    private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
+    private final LabelRepository labelRepository;
+    private final AuthenticationService authenticationService;
 
     @Transactional
     public ImportReportDTO importFromGitHub(String projectId, List<GitHubIssueDTO> githubIssues) {
