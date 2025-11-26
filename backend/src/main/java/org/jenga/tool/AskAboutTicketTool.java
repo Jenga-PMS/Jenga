@@ -54,7 +54,15 @@ public class AskAboutTicketTool {
             return new AskAboutTicketResponseDTO(message, ticket.getId().toString());
 
         } catch (NotFoundException e) {
-            String errorId = (ticketId != null) ? ticketId.toString() : (requestContext.getCurrentTicketID() != null ? requestContext.getCurrentTicketID().toString() : "N/A");
+            String errorId;
+
+            if (ticketId != null) {
+                errorId = ticketId.toString();
+            } else if (requestContext.getCurrentTicketID() != null) {
+                errorId = requestContext.getCurrentTicketID().toString();
+            } else {
+                errorId = "N/A";
+            }
             return new AskAboutTicketResponseDTO(
                 "ERROR: Sorry, I couldn't find a ticket with ID: " + errorId,
                 errorId

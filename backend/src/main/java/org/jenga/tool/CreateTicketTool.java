@@ -64,9 +64,13 @@ public class CreateTicketTool {
             String acceptanceCriteria
     ) {
         try {
-            Long finalProjectId = (projectId != null && projectId > 0) 
-                                    ? projectId 
-                                    : requestContext.getCurrentProjectID();
+            Long finalProjectId;
+
+            if (projectId != null && projectId > 0) {
+                finalProjectId = projectId;
+            } else {
+                finalProjectId = requestContext.getCurrentProjectID();
+            }
 
             if (finalProjectId == null || finalProjectId < 0) {
                 return "ERROR: Could not create ticket. Reason: Project ID is mandatory. Please specify a project.";
@@ -77,13 +81,21 @@ public class CreateTicketTool {
                 return "ERROR: Could not create ticket. Reason: Project not found with ID: " + finalProjectId;
             }
 
-            String finalReporterUsername = (reporterUsername != null && !reporterUsername.isEmpty() && !reporterUsername.equalsIgnoreCase("unassigned"))
-                                           ? reporterUsername
-                                           : requestContext.getCurrentUser();
+            String finalReporterUsername;
+
+            if (reporterUsername != null && !reporterUsername.isEmpty() && !reporterUsername.equalsIgnoreCase("unassigned")) {
+                finalReporterUsername = reporterUsername;
+            } else {
+                finalReporterUsername = requestContext.getCurrentUser();
+            }
             
-            String finalAssigneeUsername = (assigneeUsername != null && !assigneeUsername.isEmpty() && !assigneeUsername.equalsIgnoreCase("unassigned"))
-                                           ? assigneeUsername
-                                           : requestContext.getCurrentUser();
+            String finalAssigneeUsername;
+
+            if (assigneeUsername != null && !assigneeUsername.isEmpty() && !assigneeUsername.equalsIgnoreCase("unassigned")) {
+                finalAssigneeUsername = assigneeUsername;
+            } else {
+                finalAssigneeUsername = requestContext.getCurrentUser();
+            }
 
             Ticket newTicket = new Ticket();
             newTicket.setTitle(title);
