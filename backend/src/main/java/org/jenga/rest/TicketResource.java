@@ -13,11 +13,14 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.List;
 
 @Path("/api/tickets")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
+@Slf4j
 public class TicketResource {
 
     @Inject
@@ -72,8 +75,8 @@ public class TicketResource {
     @POST
     @Path("/search")
     public List<TicketResponseDTO> searchTickets(TicketSearchDTO request) {
-            System.out.println("POST /search/");
-    System.out.println("Body: " + request);
+        log.info("POST /search/");
+        log.info("Body: " + request);
         List<TicketResponseDTO> results = ticketService.searchTickets(request);
         return results;
     }
