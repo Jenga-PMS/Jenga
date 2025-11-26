@@ -158,7 +158,7 @@ public class TicketResource {
 
     @PUT
     @Path("/{ticketId}/related/{relatedTicketId}")
-    public Response AddRelatedTicket(
+    public Response addRelatedTicket(
             @PathParam("ticketId") Long ticketId,
             @PathParam("relatedTicketId") Long relatedTicketId) {
         ticketService.addRelatedTicket(ticketId, relatedTicketId);
