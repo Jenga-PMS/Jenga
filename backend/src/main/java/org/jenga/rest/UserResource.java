@@ -8,14 +8,15 @@ import org.jenga.dto.UserDTO;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+import lombok.RequiredArgsConstructor;
 
 @Path("/api/users")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
+@RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class UserResource {
 
-    @Inject
-    UserService userService;
+    private final UserService userService;
 
     @GET
     @Path("/{username}")

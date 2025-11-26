@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class WebSearchTool {
 
-    @Inject
+    @Inject //leaving inject here since constructor injections with RestClient is a pain
     @RestClient
     GoogleSearchApi searchApi;
 

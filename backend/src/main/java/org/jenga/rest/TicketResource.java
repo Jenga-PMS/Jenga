@@ -13,6 +13,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -21,10 +22,10 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @Slf4j
+@RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class TicketResource {
 
-    @Inject
-    TicketService ticketService;
+    private final TicketService ticketService;
 
     @POST
     @Path("/{projectId}")
