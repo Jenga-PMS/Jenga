@@ -3,6 +3,8 @@ package org.jenga.tool;
 import dev.langchain4j.agent.tool.Tool;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import lombok.RequiredArgsConstructor;
+
 import org.jenga.dto.UserDTO;
 import org.jenga.service.UserService;
 
@@ -10,10 +12,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
+@RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class GetAllUsersTool {
-
-    @Inject
-    UserService userService;
+    
+    private final UserService userService;
 
     @Tool("Get a list of all user usernames in the system.")
     public String getAllUsers() {

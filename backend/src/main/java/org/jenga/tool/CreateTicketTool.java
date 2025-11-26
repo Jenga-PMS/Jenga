@@ -5,13 +5,14 @@ import dev.langchain4j.agent.tool.Tool;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 import org.jenga.db.LabelRepository;
 import org.jenga.db.ProjectRepository;
 import org.jenga.db.TicketRepository;
 import org.jenga.db.UserRepository;
 import org.jenga.model.*;
-import org.jenga.service.MCP_Server.ChatRequestContext;
+import org.jenga.service.mcpserver.ChatRequestContext;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,18 +21,14 @@ import java.util.List;
 import java.util.Set;
 
 @ApplicationScoped
+@RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class CreateTicketTool {
 
-    @Inject
-    TicketRepository ticketRepository;
-    @Inject
-    ProjectRepository projectRepository;
-    @Inject
-    UserRepository userRepository;
-    @Inject
-    LabelRepository labelRepository;
-    @Inject
-    ChatRequestContext requestContext;
+    private final TicketRepository ticketRepository;
+    private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
+    private final LabelRepository labelRepository;
+    private final ChatRequestContext requestContext;
 
     @Tool("Creates a new software development ticket (e.g., bug, feature, task) in the specified project.")
     @Transactional 
@@ -64,9 +61,13 @@ public class CreateTicketTool {
             String acceptanceCriteria
     ) {
         try {
-            Long finalProjectId = (projectId != null && projectId > 0) 
-                                    ? projectId 
-                                    : requestContext.getCurrentProjectID();
+            Long finalProjectId;
+
+            if (projectId != null && projectId > 0) {
+                finalProjectId = projectId;
+            } else {
+                finalProjectId = requestContext.getCurrentProjectID();
+            }
 
             if (finalProjectId == null || finalProjectId < 0) {
                 return "ERROR: Could not create ticket. Reason: Project ID is mandatory. Please specify a project.";
@@ -77,13 +78,21 @@ public class CreateTicketTool {
                 return "ERROR: Could not create ticket. Reason: Project not found with ID: " + finalProjectId;
             }
 
-            String finalReporterUsername = (reporterUsername != null && !reporterUsername.isEmpty() && !reporterUsername.equalsIgnoreCase("unassigned"))
-                                           ? reporterUsername
-                                           : requestContext.getCurrentUser();
+            String finalReporterUsername;
+
+            if (reporterUsername != null && !reporterUsername.isEmpty() && !reporterUsername.equalsIgnoreCase("unassigned")) {
+                finalReporterUsername = reporterUsername;
+            } else {
+                finalReporterUsername = requestContext.getCurrentUser();
+            }
             
-            String finalAssigneeUsername = (assigneeUsername != null && !assigneeUsername.isEmpty() && !assigneeUsername.equalsIgnoreCase("unassigned"))
-                                           ? assigneeUsername
-                                           : requestContext.getCurrentUser();
+            String finalAssigneeUsername;
+
+            if (assigneeUsername != null && !assigneeUsername.isEmpty() && !assigneeUsername.equalsIgnoreCase("unassigned")) {
+                finalAssigneeUsername = assigneeUsername;
+            } else {
+                finalAssigneeUsername = requestContext.getCurrentUser();
+            }
 
             Ticket newTicket = new Ticket();
             newTicket.setTitle(title);

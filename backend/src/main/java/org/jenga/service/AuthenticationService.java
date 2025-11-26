@@ -11,18 +11,20 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.SecurityContext;
+import lombok.RequiredArgsConstructor;
+
 import javax.security.auth.login.LoginException;
 import jakarta.ws.rs.BadRequestException;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import io.smallrye.jwt.build.Jwt;
 
 @ApplicationScoped
+@RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class AuthenticationService {
 
     private static final int EXPIRATION_TIME_SECONDS = 3600;
 
-    @Inject
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Context
     SecurityContext securityContext;

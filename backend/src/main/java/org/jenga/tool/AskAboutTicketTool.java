@@ -5,19 +5,19 @@ import dev.langchain4j.agent.tool.P;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
-import org.jenga.dto.TicketResponseDTO;
-import org.jenga.dto.MCP_Server.AskAboutTicketResponseDTO;
-import org.jenga.service.TicketService;
-import org.jenga.service.MCP_Server.ChatRequestContext;
+import lombok.RequiredArgsConstructor;
 
-@ApplicationScoped 
+import org.jenga.dto.TicketResponseDTO;
+import org.jenga.dto.mcpserver.AskAboutTicketResponseDTO;
+import org.jenga.service.TicketService;
+import org.jenga.service.mcpserver.ChatRequestContext;
+
+@ApplicationScoped
+@RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class AskAboutTicketTool {
 
-    @Inject
-    TicketService ticketService; 
-
-    @Inject
-    ChatRequestContext requestContext;
+    private final TicketService ticketService; 
+    private final ChatRequestContext requestContext;
 
     @Tool("Get information about a specific ticket. If no ticketId is provided, it uses the user's current ticket context.")
     public AskAboutTicketResponseDTO getTicketInfo(
@@ -54,7 +54,15 @@ public class AskAboutTicketTool {
             return new AskAboutTicketResponseDTO(message, ticket.getId().toString());
 
         } catch (NotFoundException e) {
-            String errorId = (ticketId != null) ? ticketId.toString() : (requestContext.getCurrentTicketID() != null ? requestContext.getCurrentTicketID().toString() : "N/A");
+            String errorId;
+
+            if (ticketId != null) {
+                errorId = ticketId.toString();
+            } else if (requestContext.getCurrentTicketID() != null) {
+                errorId = requestContext.getCurrentTicketID().toString();
+            } else {
+                errorId = "N/A";
+            }
             return new AskAboutTicketResponseDTO(
                 "ERROR: Sorry, I couldn't find a ticket with ID: " + errorId,
                 errorId

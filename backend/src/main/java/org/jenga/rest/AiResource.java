@@ -7,24 +7,23 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import lombok.RequiredArgsConstructor;
 
 import java.util.UUID;
 
-import org.jenga.dto.MCP_Server.ChatRequestDTO;
-import org.jenga.dto.MCP_Server.ChatResponseDTO;
-import org.jenga.service.MCP_Server.AiService;
-import org.jenga.service.MCP_Server.ChatRequestContext;
+import org.jenga.dto.mcpserver.ChatRequestDTO;
+import org.jenga.dto.mcpserver.ChatResponseDTO;
+import org.jenga.service.mcpserver.AiService;
+import org.jenga.service.mcpserver.ChatRequestContext;
 
 @Path("/api/ai")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class AiResource {
 
-    @Inject
-    AiService assistant; 
-
-    @Inject
-    ChatRequestContext requestContext;
+    private final AiService assistant; 
+    private final ChatRequestContext requestContext;
 
     @POST
     @Path("/chat")

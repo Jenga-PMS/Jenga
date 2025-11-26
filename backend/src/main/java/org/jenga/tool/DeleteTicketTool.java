@@ -5,18 +5,18 @@ import dev.langchain4j.agent.tool.Tool;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
+import lombok.RequiredArgsConstructor;
 
 import org.jenga.dto.TicketResponseDTO;
 import org.jenga.service.TicketService;
-import org.jenga.service.MCP_Server.ChatRequestContext;
+import org.jenga.service.mcpserver.ChatRequestContext;
 
 @ApplicationScoped
+@RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class DeleteTicketTool {
 
-    @Inject
-    TicketService ticketService;    
-    @Inject
-    ChatRequestContext requestContext;
+    private final TicketService ticketService;    
+    private final ChatRequestContext requestContext;
 
     @Tool("Deletes a specific ticket. If no ticketId is provided, it attempts to delete the user's current ticket.")
     public String deleteTicket(            

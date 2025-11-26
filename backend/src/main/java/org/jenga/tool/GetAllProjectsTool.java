@@ -3,6 +3,8 @@ package org.jenga.tool;
 import dev.langchain4j.agent.tool.Tool;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import lombok.RequiredArgsConstructor;
+
 import org.jenga.dto.ProjectResponseDTO;
 import org.jenga.service.ProjectService;
 
@@ -10,10 +12,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
+@RequiredArgsConstructor(onConstructor_ = {@Inject})
 public class GetAllProjectsTool {
 
-    @Inject
-    ProjectService projectService;
+    private final ProjectService projectService;
 
     @Tool("Get a list of all available project IDs and their names.")
     public String getAllProjects() {
