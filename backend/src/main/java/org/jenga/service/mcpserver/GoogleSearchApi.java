@@ -1,7 +1,7 @@
-package org.jenga.service.MCP_Server;
+package org.jenga.service.mcpserver;
 
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
-import org.jenga.dto.MCP_Server.WebSearchResponseDTO;
+import org.jenga.dto.mcpserver.WebSearchResponseDTO;
 
 import jakarta.ws.rs.*;
 

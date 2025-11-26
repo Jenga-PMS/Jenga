@@ -11,10 +11,10 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.UUID;
 
-import org.jenga.dto.MCP_Server.ChatRequestDTO;
-import org.jenga.dto.MCP_Server.ChatResponseDTO;
-import org.jenga.service.MCP_Server.AiService;
-import org.jenga.service.MCP_Server.ChatRequestContext;
+import org.jenga.dto.mcpserver.ChatRequestDTO;
+import org.jenga.dto.mcpserver.ChatResponseDTO;
+import org.jenga.service.mcpserver.AiService;
+import org.jenga.service.mcpserver.ChatRequestContext;
 
 @Path("/api/ai")
 @Produces(MediaType.APPLICATION_JSON)

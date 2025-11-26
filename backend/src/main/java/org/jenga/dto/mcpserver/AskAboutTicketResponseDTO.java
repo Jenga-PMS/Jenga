@@ -1,4 +1,4 @@
-package org.jenga.dto.MCP_Server;
+package org.jenga.dto.mcpserver;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

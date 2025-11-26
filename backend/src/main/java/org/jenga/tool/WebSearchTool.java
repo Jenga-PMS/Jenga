@@ -5,8 +5,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
-import org.jenga.service.MCP_Server.GoogleSearchApi;
-import org.jenga.dto.MCP_Server.WebSearchResponseDTO;
+import org.jenga.service.mcpserver.GoogleSearchApi;
+import org.jenga.dto.mcpserver.WebSearchResponseDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;

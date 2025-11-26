@@ -1,4 +1,4 @@
-package org.jenga.service.MCP_Server;
+package org.jenga.service.mcpserver;
 
 import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;

@@ -8,9 +8,9 @@ import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 
 import org.jenga.dto.TicketResponseDTO;
-import org.jenga.dto.MCP_Server.AskAboutTicketResponseDTO;
+import org.jenga.dto.mcpserver.AskAboutTicketResponseDTO;
 import org.jenga.service.TicketService;
-import org.jenga.service.MCP_Server.ChatRequestContext;
+import org.jenga.service.mcpserver.ChatRequestContext;
 
 @ApplicationScoped
 @RequiredArgsConstructor(onConstructor_ = {@Inject})

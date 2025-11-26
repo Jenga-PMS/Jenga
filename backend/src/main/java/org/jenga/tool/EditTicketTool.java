@@ -14,7 +14,7 @@ import org.jenga.model.TicketPriority;
 import org.jenga.model.TicketSize;
 import org.jenga.model.TicketStatus;
 import org.jenga.service.TicketService;
-import org.jenga.service.MCP_Server.ChatRequestContext;
+import org.jenga.service.mcpserver.ChatRequestContext;
 import java.util.List;
 
 @ApplicationScoped

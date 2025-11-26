@@ -1,4 +1,4 @@
-package org.jenga.service.MCP_Server;
+package org.jenga.service.mcpserver;
 
 import jakarta.enterprise.context.RequestScoped;
 import lombok.Data;

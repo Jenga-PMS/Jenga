@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.jenga.dto.TicketResponseDTO;
 import org.jenga.service.TicketService;
-import org.jenga.service.MCP_Server.ChatRequestContext;
+import org.jenga.service.mcpserver.ChatRequestContext;
 
 @ApplicationScoped
 @RequiredArgsConstructor(onConstructor_ = {@Inject})

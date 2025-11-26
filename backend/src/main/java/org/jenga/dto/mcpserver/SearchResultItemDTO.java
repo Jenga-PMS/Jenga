@@ -1,4 +1,4 @@
-package org.jenga.dto.MCP_Server;
+package org.jenga.dto.mcpserver;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;

@@ -12,7 +12,7 @@ import org.jenga.db.ProjectRepository;
 import org.jenga.db.TicketRepository;
 import org.jenga.db.UserRepository;
 import org.jenga.model.*;
-import org.jenga.service.MCP_Server.ChatRequestContext;
+import org.jenga.service.mcpserver.ChatRequestContext;
 
 import java.util.ArrayList;
 import java.util.Collections;
