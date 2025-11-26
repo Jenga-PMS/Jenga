@@ -81,8 +81,7 @@ public class AuthenticationService {
     }
 
     public String generateToken(User user) {
-        long expirationTime = (System.currentTimeMillis() + EXPIRATION_TIME_SECONDS * 1000L) / 1000L;
-        expirationTime = (System.currentTimeMillis() / 1000L) + EXPIRATION_TIME_SECONDS;
+        long expirationTime = (System.currentTimeMillis() / 1000L) + EXPIRATION_TIME_SECONDS;
 
         return Jwt.issuer("jenga")
                   .upn(user.getUsername())
