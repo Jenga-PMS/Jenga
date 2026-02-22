@@ -14,7 +14,7 @@ services:
     ports:
       - "7000:80"
     networks:
-      - openai-network
+      - jenga-network
 
   jwt-keygen:
     image: alpine:latest
@@ -53,16 +53,13 @@ services:
       #GOOGLE_CSE_ID: ${GOOGLE_CSE_ID}
       SMALLRYE_JWT_SIGN_KEY_LOCATION: file:/keys/privateKey.pem
       MP_JWT_VERIFY_PUBLICKEY_LOCATION: file:/keys/publicKey.pem
-      #mp.jwt.verify.publickey: |
-      #  -----BEGIN PUBLIC KEY-----
-      #  YOUR_KEY
-      #  -----END PUBLIC KEY-----
+  
     ports:
       - "8080:8080"
     volumes:
       - jwt-keys:/keys
     networks:
-      - openai-network
+      - jenga-network
 
   db:
     container_name: db
@@ -87,7 +84,7 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - openai-network
+      - jenga-network
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./init-dbs.sql:/docker-entrypoint-initdb.d/init-dbs.sql
@@ -103,17 +100,17 @@ services:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: geheim
     networks:
-      - openai-network
+      - jenga-network
     volumes:
       - pgadmin-data:/var/lib/pgadmin
-      #changed to pgadmin2
+      #changed to pgadmin
 
 
 
 
-      # Define networks
+  # Define networks
 networks:
-  openai-network:
+  jenga-network:
     driver: bridge
 
 # Define volumes
