@@ -20,30 +20,26 @@ services:
     image: alpine:latest
     container_name: jwt-keygen
     command: >
-      sh -c "apk add --no-cache openssl &&
-      openssl genrsa -out /keys/privateKey.pem 2048 &&
-      openssl rsa -in /keys/privateKey.pem -pubout -out /keys/publicKey.pem &&
-      chmod 600 /keys/privateKey.pem &&
-      chmod 644 /keys/publicKey.pem &&
-      echo 'Keys generated.'"
+      sh -c "apk add --no-cache openssl && openssl genrsa -out /keys/privateKey.pem 2048 && openssl rsa -in /keys/privateKey.pem -pubout -out /keys/publicKey.pem && chmod 600 /keys/privateKey.pem && chmod 644 /keys/publicKey.pem && echo 'Keys generated.'"
     volumes:
-      - jwt-keys:/keys 
+      - jwt-keys:/keys
     restart: "no"
 
-
-#backend
-  backend: 
+  #backend
+  backend:
     build:
       context: ./backend
       dockerfile: Dockerfile.dev
     container_name: jenga-backend
+    env_file:
+      - backend/.env
     depends_on:
-      db: 
+      db:
         condition: service_healthy
       jwt-keygen:
         condition: service_completed_successfully
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080/q/health/ready || exit 1"]
+      test: [ "CMD-SHELL", "curl -f http://localhost:8080/q/health/ready || exit 1" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -52,22 +48,21 @@ services:
       QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://db:5432/backend_db
       QUARKUS_DATASOURCE_USERNAME: postgres
       QUARKUS_DATASOURCE_PASSWORD: dbpassword
-      GOOGLE_API_KEY: your_google_api_key_here
-      GOOGLE_CSE_ID: your_custom_search_engine_key_here
+      QUARKUS_LANGCHAIN4J_AI_GEMINI_API_KEY: ${QUARKUS_LANGCHAIN4J_AI_GEMINI_API_KEY}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY}
+      GOOGLE_CSE_ID: ${GOOGLE_CSE_ID}
       SMALLRYE_JWT_SIGN_KEY_LOCATION: file:/keys/privateKey.pem
       MP_JWT_VERIFY_PUBLICKEY_LOCATION: file:/keys/publicKey.pem
       #mp.jwt.verify.publickey: |
       #  -----BEGIN PUBLIC KEY-----
       #  YOUR_KEY
       #  -----END PUBLIC KEY-----
-    ports: 
+    ports:
       - "8080:8080"
     volumes:
       - jwt-keys:/keys
     networks:
       - openai-network
-
-
 
   db:
     container_name: db
@@ -75,7 +70,7 @@ services:
     image: postgres:17
     restart: always
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres" ]
       interval: 1s
       timeout: 3s
       retries: 5
@@ -106,7 +101,6 @@ services:
       DATABASE_URL: postgresql://dbuser:dbpassword@db:5432/prometheus_db
     networks:
       - openai-network
-        
 
   pgadmin:
     container_name: pgadmin4_container
@@ -126,7 +120,7 @@ services:
 
 
 
-# Define networks
+      # Define networks
 networks:
   openai-network:
     driver: bridge
