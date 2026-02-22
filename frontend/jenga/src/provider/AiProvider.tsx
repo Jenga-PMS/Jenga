@@ -55,13 +55,12 @@ export const AiProvider = (props: ProviderProps) => {
 
         // postApiAiChat expects: { requestBody: ChatRequestDTO }
         const result = await AiResourceService.postApiAiChat({
-            requestBody: {
                 message: p.text,
                 conversationId: sessionId(),
                 currentUser: uCtx?.user()?.username ?? "unknown",
                 currentProjectID: pCtx?.selectedTicket()?.id ?? 0,
                 currentTicketID: pCtx?.selectedTicket()?.id ?? 0,
-            }
+            
         });
 
         console.debug("[AiProvider] postApiAiChat result:", result);
