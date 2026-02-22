@@ -86,7 +86,6 @@ const ChatPanel = (props: ChatPanelProps) => {
   const aCtx = useContext(AuthContext);
   const [message, setMessage] = createSignal("");
   const [showError, setShowError] = createSignal(false);
-
   let messagesEndRef: HTMLDivElement | undefined;
 
   createEffect(() => {
@@ -151,10 +150,7 @@ const ChatPanel = (props: ChatPanelProps) => {
                     "box-shadow": "0 1px 3px rgba(0,0,0,0.12)"
                   }}
                 >
-                  <Typography
-                    variant="caption"
-                    sx={{ display: "block", fontWeight: 700, marginBottom: "2px", opacity: 0.75 }}
-                  >
+                  <Typography variant="caption" sx={{ display: "block", fontWeight: 700, marginBottom: "2px", opacity: 0.75 }}>
                     {isUser() ? "You" : "AI"}
                   </Typography>
                   {msg}
@@ -207,15 +203,9 @@ const ChatPanel = (props: ChatPanelProps) => {
           size="small"
           disabled={props.isWaiting}
         />
-        <Button
-          variant="contained"
-          onClick={handleSend}
-          disabled={props.isWaiting}
-          sx={{ flexShrink: 0 }}
-        >
+        <Button variant="contained" onClick={handleSend} disabled={props.isWaiting} sx={{ flexShrink: 0 }}>
           Send
         </Button>
-
         <Show when={showError()}>
           <Alert severity="error" sx={{ width: "100%" }}>
             You must be logged in to use AI chat.
@@ -236,17 +226,15 @@ type SidebarProps = {
 };
 
 const SessionSidebar = (props: SidebarProps) => (
-  <Stack
-    sx={{
-      width: "200px",
-      minWidth: "200px",
-      borderRight: "1px solid #e0e0e0",
-      padding: "12px 8px",
-      gap: "6px",
-      backgroundColor: "#fafafa",
-      overflowY: "auto"
-    }}
-  >
+  <Stack sx={{
+    width: "200px",
+    minWidth: "200px",
+    borderRight: "1px solid #e0e0e0",
+    padding: "12px 8px",
+    gap: "6px",
+    backgroundColor: "#fafafa",
+    overflowY: "auto"
+  }}>
     <Button variant="contained" size="small" onClick={props.onNew} sx={{ marginBottom: "8px" }}>
       + New Chat
     </Button>
@@ -287,58 +275,35 @@ export const ChatDialog = () => {
 
   const activeSession = () => sessions().find(s => s.id === activeId())!;
 
-  // ─── Watch AiContext for AI replies ─────────────────────────────────────────
+  // ── Detect AI replies from AiContext ──────────────────────────────────────
   //
-  // `on()` with defer:true means this runs ONLY when aiContext.messages()
-  // changes after mount — not on the initial render. It receives both the new
-  // and previous value, so we can detect exactly what was appended.
-  //
-  // AiProvider appends messages one at a time:
-  //   • User message  → array grows by 1 (we called sendMessage, isWaiting=true)
-  //   • AI reply      → array grows by 1 again (still isWaiting=true)
-  //
-  // We only care about the SECOND growth (the AI reply). We know it's an AI
-  // reply and not the user echo because AiProvider adds the user message
-  // synchronously inside sendMessage() before we even set isWaiting=true —
-  // so by the time the effect fires for the user message, isWaiting is already
-  // true, but msgs.length will be prevMsgs.length + 1.
-  //
-  // Then the AI reply fires a second time: msgs.length = prevMsgs.length + 1
-  // and isWaiting is still true → that's our signal.
-  //
-  // IMPORTANT: We skip the first growth (user echo) by checking that the new
-  // last item does NOT equal the text we just sent. AiProvider adds the user
-  // message to its own `messages` array synchronously, so the first +1 is
-  // the user's own text — identical to what we already added locally. We skip
-  // those duplicates by comparing with the session's last message.
-  // ─────────────────────────────────────────────────────────────────────────────
-
+  // Flow:
+  //   1. User clicks Send in chat.tsx → handleSendMessage adds user msg locally
+  //      and calls aiContext.sendMessage(text)
+  //   2. AiProvider.sendMessage also appends user msg to aiContext.messages
+  //      → effect fires: array grew by 1, new item === lastLocal → SKIP (user echo)
+  //   3. API responds → AiProvider appends AI reply to aiContext.messages
+  //      → effect fires: array grew by 1, new item !== lastLocal → APPEND to session
+  // ─────────────────────────────────────────────────────────────────────────
   createEffect(
     on(
       () => aiContext?.messages(),
       (msgs, prevMsgs) => {
-        console.debug("[Chat] aiContext.messages changed", {
-          prev: prevMsgs?.length,
-          next: msgs?.length,
-          isWaiting: isWaiting(),
-          msgs,
-        });
-
         if (!msgs || !prevMsgs) return;
-        // Only react if we're waiting for a reply and the array grew by 1
-        if (!isWaiting() || msgs.length !== prevMsgs.length + 1) return;
+        if (msgs.length !== prevMsgs.length + 1) return;
+        if (!isWaiting()) return;
 
         const newItem = msgs[msgs.length - 1];
         const session = sessions().find(s => s.id === activeId());
         const lastLocal = session?.messages[session.messages.length - 1];
 
-        // Skip if this is just the user-message echo from AiProvider
+        // Skip the user-message echo that AiProvider adds in sendMessage()
         if (newItem === lastLocal) {
-          console.debug("[Chat] Skipping user echo from AiProvider");
+          console.debug("[Chat] skipping user echo");
           return;
         }
 
-        // It's a genuine AI reply — append it to the active session
+        // It's the real AI reply — append to active session and clear spinner
         console.debug("[Chat] AI reply received:", newItem);
         setSessions(prev =>
           prev.map(s =>
@@ -356,7 +321,7 @@ export const ChatDialog = () => {
   const handleSelectSession = (id: number) => {
     setActiveId(id);
     const target = sessions().find(s => s.id === id);
-    // Restore session history into AiContext so the LLM has proper context
+    // Restore this session's history into AiContext so the backend has context
     aiContext?.setMessages(target?.messages.length ? [...target.messages] : undefined);
     setIsWaiting(false);
   };
@@ -368,9 +333,9 @@ export const ChatDialog = () => {
   };
 
   const handleSendMessage = (text: string) => {
-    console.debug("[Chat] Sending:", text);
+    console.debug("[Chat] sending:", text);
 
-    // Add user message locally immediately (optimistic update)
+    // 1. Add user message locally immediately (optimistic)
     setSessions(prev =>
       prev.map(s =>
         s.id === activeId()
@@ -379,9 +344,10 @@ export const ChatDialog = () => {
       )
     );
 
+    // 2. Show typing indicator
     setIsWaiting(true);
 
-    // Delegate to AiContext which calls the real backend
+    // 3. Call real backend via AiContext
     aiContext?.sendMessage(text);
   };
 
@@ -391,9 +357,7 @@ export const ChatDialog = () => {
       onClose={() => layoutCtx?.setOpenChat(false)}
       maxWidth="md"
       fullWidth
-      PaperProps={{
-        sx: { height: "75vh", display: "flex", flexDirection: "column" }
-      }}
+      PaperProps={{ sx: { height: "75vh", display: "flex", flexDirection: "column" } }}
     >
       <DialogContent sx={{ display: "flex", padding: 0, overflow: "hidden" }}>
         <SessionSidebar

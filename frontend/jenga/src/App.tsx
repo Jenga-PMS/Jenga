@@ -39,33 +39,32 @@ const App = (props: AppProps) => {
             <UserProvider>
               <ProjectProvider>
                 <AiProvider>
-
-                <AppBar position="static">
-                  <Toolbar>
-                    <IconButton onClick={() => { setOpen(prev => !prev) }}>
-                      <Menu></Menu>
-                    </IconButton>
-                    <img src={logo} style={{ "height": "2vw", "width": "auto" }}></img>
-                    <Box marginLeft={"auto"}>
-                      <Auth></Auth>
+                  <AppBar position="static">
+                    <Toolbar>
+                      <IconButton onClick={() => { setOpen(prev => !prev) }}>
+                        <Menu></Menu>
+                      </IconButton>
+                      <img src={logo} style={{ "height": "2vw", "width": "auto" }}></img>
+                      <Box marginLeft={"auto"}>
+                        <Auth></Auth>
+                      </Box>
+                    </Toolbar>
+                  </AppBar>
+                  <Stack direction="row">
+                    <Show when={open()}>
+                      <Card sx={{ "height": "100vh", "width": "10vw" }}>
+                        <Sidebar />
+                      </Card>
+                    </Show>
+                    <Box flex={1}>
+                      {props.children}
+                      <Box position="absolute" bottom={0} right={0} margin={2}>
+                        <ChatButton></ChatButton>
+                        <ChatDialog></ChatDialog>
+                      </Box>
                     </Box>
-                  </Toolbar>
-                </AppBar>
-                <Stack direction="row">
-                  <Show when={open()}>
-                    <Card sx={{ "height": "100vh", "width": "10vw" }}>
-                      <Sidebar />
-                    </Card>
-                  </Show>
-                  <Box flex={1}>
-                    {props.children}
-                    <Box position="absolute" bottom={0} right={0} margin={2}>
-                      <ChatButton></ChatButton>
-                      <ChatDialog></ChatDialog>
-                    </Box>
-                  </Box>
-                </Stack>
-                <Footer></Footer>
+                  </Stack>
+                  <Footer></Footer>
                 </AiProvider>
               </ProjectProvider>
             </UserProvider>
