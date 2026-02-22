@@ -1,4 +1,4 @@
-#To run the docker compose, use the command "docker compose up"
+#To run the docker compose, use the command "docker compose up --build"
 services:
 
   frontend:
@@ -32,7 +32,7 @@ services:
       dockerfile: Dockerfile.dev
     container_name: jenga-backend
     env_file:
-      - backend/.env
+      - ./backend/.env
     depends_on:
       db:
         condition: service_healthy
@@ -48,9 +48,9 @@ services:
       QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://db:5432/backend_db
       QUARKUS_DATASOURCE_USERNAME: postgres
       QUARKUS_DATASOURCE_PASSWORD: dbpassword
-      QUARKUS_LANGCHAIN4J_AI_GEMINI_API_KEY: ${QUARKUS_LANGCHAIN4J_AI_GEMINI_API_KEY}
-      GOOGLE_API_KEY: ${GOOGLE_API_KEY}
-      GOOGLE_CSE_ID: ${GOOGLE_CSE_ID}
+      #QUARKUS_LANGCHAIN4J_AI_GEMINI_API_KEY: ${QUARKUS_LANGCHAIN4J_AI_GEMINI_API_KEY}
+      #GOOGLE_API_KEY: ${GOOGLE_API_KEY}
+      #GOOGLE_CSE_ID: ${GOOGLE_CSE_ID}
       SMALLRYE_JWT_SIGN_KEY_LOCATION: file:/keys/privateKey.pem
       MP_JWT_VERIFY_PUBLICKEY_LOCATION: file:/keys/publicKey.pem
       #mp.jwt.verify.publickey: |
