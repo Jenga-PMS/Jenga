@@ -83,8 +83,6 @@ const AppShell = (props: AppProps) => {
                       <Sidebar />
                     </Card>
                   </Show>
-                  <Box flex={1}>
-                    {props.children}
                     <Box flex={1}>
                       {props.children}
                       <Box position="absolute" bottom={0} right={0} margin={2}>
@@ -92,7 +90,6 @@ const AppShell = (props: AppProps) => {
                         <ChatDialog></ChatDialog>
                       </Box>
                     </Box>
-                  </Box>
                 </Stack>
                 <Footer></Footer>
               </GuideProvider>
