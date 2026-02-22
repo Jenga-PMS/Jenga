@@ -1,0 +1,26 @@
+.projects-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 22.5rem;
+    gap: 1rem;
+    align-items: stretch;
+}
+
+.project-sidebar {
+    height: 100%;
+}
+
+.projects-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.projects-list-content {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.project-sidebar {
+    position: sticky;
+    top: 1rem;
+}

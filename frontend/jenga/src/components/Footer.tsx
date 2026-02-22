@@ -1,7 +1,11 @@
 import { Box } from "@suid/material"
 import { A } from "@solidjs/router"
+import { useContext } from "solid-js";
+import { I18nContext } from "../provider/I18nProvider";
 
 export const Footer = () => {
+    const i18n = useContext(I18nContext);
+
     return (
         <Box
             component="footer"
@@ -14,7 +18,7 @@ export const Footer = () => {
                 justifyContent: "center",
             }}
         >
-            <A href="/Privacy">Privacy Policy</A>
+            <A href="/Privacy">{i18n?.t("footer.privacyPolicy")}</A>
         </Box>
     )
 }

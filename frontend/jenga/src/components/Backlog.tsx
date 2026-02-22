@@ -4,6 +4,7 @@ import { useContext, createSignal, For } from "solid-js"
 import { TicketResponseDTO } from "../api"
 import { ProjectContext } from "../provider/ProjectProvider"
 import { NewTicketDialog } from "./NewTicketDialog"
+import { I18nContext } from "../provider/I18nProvider"
 
 interface BacklogItemProps {
     ticket: TicketResponseDTO
@@ -11,9 +12,13 @@ interface BacklogItemProps {
 
 const BacklogItem = (props: BacklogItemProps) => {
     const pCtx = useContext(ProjectContext)
+    const i18n = useContext(I18nContext)
 
     return (
         <ListItem
+            sx={{
+                "transform": "translateZ(0)",
+            }}
             draggable
             onDragStart={(event) => {
                 const id = props.ticket.id
@@ -22,13 +27,16 @@ const BacklogItem = (props: BacklogItemProps) => {
                 pCtx?.setSelectedTicket(() => props.ticket)
             }}
         >
-            <ListItemButton onClick={() => pCtx?.setSelectedTicket(props.ticket)}>
+            <ListItemButton
+                onClick={() => pCtx?.setSelectedTicket(props.ticket)}
+                selected={pCtx?.selectedTicket()?.id === props.ticket.id}
+            >
                 <ListItemAvatar>
                     <Avatar></Avatar>
                 </ListItemAvatar>
                 <ListItemText
                     primary={props.ticket.title}
-                    secondary={`reporter: ${props.ticket.reporter} assignee: ${props.ticket.assignee}`} />
+                    secondary={`${i18n?.t("ticket.reporter")}: ${props.ticket.reporter} ${i18n?.t("ticket.assignee")}: ${props.ticket.assignee}`} />
             </ListItemButton>
         </ListItem>
     )
@@ -41,16 +49,18 @@ interface BacklogProps {
 export const Backlog = (props: BacklogProps) => {
 
     const pCtx = useContext(ProjectContext)
+    const i18n = useContext(I18nContext)
 
     const [open, setOpen] = createSignal(false)
+    const tickets = () => props.tickets ?? pCtx?.tickets() ?? []
 
     return (
         <>
-            <Card>
-                <CardHeader title="Backlog"></CardHeader>
+            <Card id="guide-backlog">
+                <CardHeader title={i18n?.t("backlog.title")}></CardHeader>
                 <CardContent>
                     <List>
-                        <For each={pCtx?.tickets() ?? []}>
+                        <For each={tickets()}>
                             {
                                 (t) => <BacklogItem ticket={t}></BacklogItem>
                             }

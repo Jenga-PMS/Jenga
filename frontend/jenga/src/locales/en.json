@@ -1,0 +1,211 @@
+{
+  "common": {
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "create": "Create",
+    "new": "New",
+    "save": "Save"
+  },
+  "lang": {
+    "en": "EN",
+    "de": "DE"
+  },
+  "auth": {
+    "authentication": "Authentication",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "username": "Username",
+    "email": "E-mail",
+    "password": "Password",
+    "wrongCredentials": "Wrong username or password",
+    "login": "Login",
+    "registrationFailed": "Registration failed",
+    "register": "Register"
+  },
+  "guide": {
+    "button": "Guide",
+    "back": "Back",
+    "next": "Next",
+    "finish": "Finish",
+    "steps": {
+      "welcome": {
+        "title": "Welcome to Jenga",
+        "text": "This quick tour follows the typical flow: choose a project, import or create tickets, plan work in Sprint, then update ticket details."
+      },
+      "navigation": {
+        "title": "Main Navigation",
+        "text": "Use this menu button to open or close the sidebar. The guide will switch between Home and Sprint automatically."
+      },
+      "sidebar": {
+        "title": "App Sections",
+        "text": "Navigate to Home for project setup and to Sprint for daily ticket planning and status updates."
+      },
+      "projects": {
+        "title": "Projects",
+        "text": "Start here: create or select a project. In Jenga, tickets and labels are always scoped to the selected project."
+      },
+      "fileImport": {
+        "title": "File Import",
+        "text": "You can seed a project by importing GitHub issues as JSON via drag and drop or the file picker."
+      },
+      "ticketFilter": {
+        "title": "Ticket Filter",
+        "text": "Before planning, narrow the ticket set by title, assignee, status, labels, or all fields."
+      },
+      "kanban": {
+        "title": "Kanban",
+        "text": "Use drag and drop to move tickets across status columns and assignees directly on the board."
+      },
+      "backlog": {
+        "title": "Backlog",
+        "text": "The backlog lists all filtered tickets and lets you create new tickets with the plus button."
+      },
+      "ticketDetails": {
+        "title": "Ticket Details",
+        "text": "Select any ticket from Kanban or Backlog, edit fields here, then save to persist project changes."
+      },
+      "done": {
+        "title": "You're Ready",
+        "text": "You now know the core Jenga workflow. Pick a project and start planning your sprint."
+      }
+    }
+  },
+  "sidebar": {
+    "home": "Home",
+    "profile": "Profile",
+    "sprint": "Sprint",
+    "about": "About"
+  },
+  "footer": {
+    "privacyPolicy": "Privacy Policy"
+  },
+  "pages": {
+    "home": {
+      "title": "Home"
+    },
+    "about": {
+      "title": "About"
+    },
+    "profile": {
+      "title": "Profile",
+      "loginRequired": "Please login to view profile info!",
+      "username": "Username",
+      "email": "E-mail"
+    },
+    "sprint": {
+      "title": "Sprint",
+      "ticketDetails": "Ticket Details",
+      "selectTicket": "Please select a ticket",
+      "ticketSaved": "Ticket saved"
+    }
+  },
+  "projects": {
+    "title": "Projects",
+    "noProjectsFound": "No projects found",
+    "projectInfo": "Project Info",
+    "selectProject": "Please select a project",
+    "projectSaved": "Project saved",
+    "confirmDeletionTitle": "Confirm Deletion",
+    "confirmDeletionText": "Are you sure? This can't be undone!"
+  },
+  "projectInfo": {
+    "identifier": "Identifier",
+    "name": "Name",
+    "description": "Description"
+  },
+  "newProject": {
+    "title": "New Project",
+    "created": "Project created"
+  },
+  "newTicket": {
+    "title": "New Ticket",
+    "created": "Ticket created"
+  },
+  "filedrop": {
+    "chooseFile": "Choose File"
+  },
+  "kanban": {
+    "title": "Kanban",
+    "dev": "Dev"
+  },
+  "backlog": {
+    "title": "Backlog"
+  },
+  "ticket": {
+    "reporter": "Reporter",
+    "assignee": "Assignee"
+  },
+  "ticketFilters": {
+    "filterBy": "Filter by",
+    "ticketFilter": "Ticket filter",
+    "placeholder": "Type to filter tickets...",
+    "removeFilterRow": "Remove filter row",
+    "showLess": "Show less",
+    "extend": "Extend",
+    "field": {
+      "all": "All fields",
+      "title": "Title",
+      "description": "Description",
+      "assignee": "Assignee",
+      "reporter": "Reporter",
+      "status": "Status",
+      "labels": "Labels",
+      "blocked": "Blocked",
+      "related": "Related"
+    }
+  },
+  "labels": {
+    "label": "Labels"
+  },
+  "ticketInfo": {
+    "id": "Ticket ID",
+    "title": "Title",
+    "description": "Description",
+    "acceptanceCriteria": "Acceptance Criteria",
+    "addAcceptanceCriteria": "Add acceptance criterion",
+    "removeAcceptanceCriteria": "Remove acceptance criterion",
+    "acceptanceCriteriaDescription": "Criterion",
+    "acceptanceCriteriaPlaceholder": "Describe the expected result",
+    "relatedTickets": "Related ticket IDs",
+    "blockingTickets": "Blocking ticket IDs",
+    "blockedTickets": "Blocked by ticket IDs",
+    "idsPlaceholder": "e.g. 12, 23, 45",
+    "assignee": "Assignee",
+    "priority": "Priority",
+    "size": "Size",
+    "status": "Status"
+  },
+  "ticketPriority": {
+    "LOW": "Low",
+    "MEDIUM": "Medium",
+    "HIGH": "High"
+  },
+  "ticketSize": {
+    "TINY": "Tiny",
+    "SMALL": "Small",
+    "MEDIUM": "Medium",
+    "LARGE": "Large",
+    "HUGE": "Huge"
+  },
+  "ticketStatus": {
+    "OPEN": "Open",
+    "IN_PROGRESS": "In Progress",
+    "IN_REVIEW": "In Review",
+    "RESOLVED": "Resolved",
+    "CLOSED": "Closed",
+    "ON_HOLD": "On Hold"
+  },
+  "errors": {
+    "noProjectSelected": "No project selected",
+    "noProjectSelectedForImport": "No project selected for import",
+    "failedImportIssues": "Failed to import issues",
+    "failedLoadUsers": "Failed to load users",
+    "failedLoadLabels": "Failed to load labels",
+    "failedCreateLabel": "Failed to create label",
+    "failedCreateProject": "Failed to create project",
+    "failedUpdateProject": "Failed to update project",
+    "failedDeleteProject": "Failed to delete project",
+    "failedCreateTicket": "Failed to create ticket",
+    "failedSaveTicket": "Failed to save ticket"
+  }
+}

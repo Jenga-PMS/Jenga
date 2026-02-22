@@ -1,0 +1,211 @@
+{
+  "common": {
+    "cancel": "Abbrechen",
+    "confirm": "Bestätigen",
+    "create": "Erstellen",
+    "new": "Neu",
+    "save": "Speichern"
+  },
+  "lang": {
+    "en": "EN",
+    "de": "DE"
+  },
+  "auth": {
+    "authentication": "Authentifizierung",
+    "signIn": "Anmelden",
+    "signUp": "Registrieren",
+    "username": "Benutzername",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "wrongCredentials": "Benutzername oder Passwort ist falsch",
+    "login": "Login",
+    "registrationFailed": "Registrierung fehlgeschlagen",
+    "register": "Registrieren"
+  },
+  "guide": {
+    "button": "Guide",
+    "back": "Zurück",
+    "next": "Weiter",
+    "finish": "Fertig",
+    "steps": {
+      "welcome": {
+        "title": "Willkommen bei Jenga",
+        "text": "Diese kurze Tour zeigt den typischen Ablauf: Projekt wählen, Tickets importieren oder erstellen, Sprint planen und Ticketdetails aktualisieren."
+      },
+      "navigation": {
+        "title": "Hauptnavigation",
+        "text": "Mit diesem Button kannst du die Seitenleiste öffnen oder schließen. Der Guide wechselt automatisch zwischen Home und Sprint."
+      },
+      "sidebar": {
+        "title": "App-Bereiche",
+        "text": "Nutze Home für die Einrichtung und Sprint für die tägliche Ticket-Planung und Status-Updates."
+      },
+      "projects": {
+        "title": "Projekte",
+        "text": "Starte hier: Erstelle oder wähle ein Projekt. In Jenga sind Tickets und Labels immer an das gewählte Projekt gebunden."
+      },
+      "fileImport": {
+        "title": "Dateiimport",
+        "text": "Du kannst ein Projekt mit GitHub-Issues als JSON über Drag-and-drop oder Dateiauswahl befüllen."
+      },
+      "ticketFilter": {
+        "title": "Ticket-Filter",
+        "text": "Vor der Planung kannst du Tickets nach Titel, Assignee, Status, Labels oder über alle Felder filtern."
+      },
+      "kanban": {
+        "title": "Kanban",
+        "text": "Verschiebe Tickets per Drag-and-drop zwischen Status-Spalten und Assignees direkt im Board."
+      },
+      "backlog": {
+        "title": "Backlog",
+        "text": "Das Backlog zeigt alle gefilterten Tickets und erlaubt das Erstellen neuer Tickets über den Plus-Button."
+      },
+      "ticketDetails": {
+        "title": "Ticket-Details",
+        "text": "Wähle ein Ticket aus Kanban oder Backlog, bearbeite es hier und speichere die Änderungen."
+      },
+      "done": {
+        "title": "Du bist bereit",
+        "text": "Du kennst jetzt den zentralen Jenga-Workflow. Wähle ein Projekt und starte die Sprint-Planung."
+      }
+    }
+  },
+  "sidebar": {
+    "home": "Home",
+    "profile": "Profil",
+    "sprint": "Sprint",
+    "about": "Über"
+  },
+  "footer": {
+    "privacyPolicy": "Datenschutz"
+  },
+  "pages": {
+    "home": {
+      "title": "Home"
+    },
+    "about": {
+      "title": "Über"
+    },
+    "profile": {
+      "title": "Profil",
+      "loginRequired": "Bitte einloggen, um Profilinfos zu sehen!",
+      "username": "Benutzername",
+      "email": "E-Mail"
+    },
+    "sprint": {
+      "title": "Sprint",
+      "ticketDetails": "Ticket-Details",
+      "selectTicket": "Bitte ein Ticket auswählen",
+      "ticketSaved": "Ticket gespeichert"
+    }
+  },
+  "projects": {
+    "title": "Projekte",
+    "noProjectsFound": "Keine Projekte gefunden",
+    "projectInfo": "Projektinfos",
+    "selectProject": "Bitte ein Projekt auswählen",
+    "projectSaved": "Projekt gespeichert",
+    "confirmDeletionTitle": "Löschen bestätigen",
+    "confirmDeletionText": "Bist du sicher? Das kann nicht rückgängig gemacht werden!"
+  },
+  "projectInfo": {
+    "identifier": "Identifier",
+    "name": "Name",
+    "description": "Beschreibung"
+  },
+  "newProject": {
+    "title": "Neues Projekt",
+    "created": "Projekt erstellt"
+  },
+  "newTicket": {
+    "title": "Neues Ticket",
+    "created": "Ticket erstellt"
+  },
+  "filedrop": {
+    "chooseFile": "Datei wählen"
+  },
+  "kanban": {
+    "title": "Kanban",
+    "dev": "Dev"
+  },
+  "backlog": {
+    "title": "Backlog"
+  },
+  "ticket": {
+    "reporter": "Reporter",
+    "assignee": "Assignee"
+  },
+  "ticketFilters": {
+    "filterBy": "Filtern nach",
+    "ticketFilter": "Ticket-Filter",
+    "placeholder": "Tippen, um Tickets zu filtern...",
+    "removeFilterRow": "Filterzeile entfernen",
+    "showLess": "Weniger anzeigen",
+    "extend": "Erweitern",
+    "field": {
+      "all": "Alle Felder",
+      "title": "Titel",
+      "description": "Beschreibung",
+      "assignee": "Assignee",
+      "reporter": "Reporter",
+      "status": "Status",
+      "labels": "Labels",
+      "blocked": "Blockiert",
+      "related": "Verknüpft"
+    }
+  },
+  "labels": {
+    "label": "Labels"
+  },
+  "ticketInfo": {
+    "id": "Ticket-ID",
+    "title": "Titel",
+    "description": "Beschreibung",
+    "acceptanceCriteria": "Akzeptanzkriterien",
+    "addAcceptanceCriteria": "Akzeptanzkriterium hinzufügen",
+    "removeAcceptanceCriteria": "Akzeptanzkriterium entfernen",
+    "acceptanceCriteriaDescription": "Kriterium",
+    "acceptanceCriteriaPlaceholder": "Erwartetes Ergebnis beschreiben",
+    "relatedTickets": "Verknüpfte Ticket-IDs",
+    "blockingTickets": "Blockierende Ticket-IDs",
+    "blockedTickets": "Blockiert durch Ticket-IDs",
+    "idsPlaceholder": "z. B. 12, 23, 45",
+    "assignee": "Assignee",
+    "priority": "Priorität",
+    "size": "Größe",
+    "status": "Status"
+  },
+  "ticketPriority": {
+    "LOW": "Niedrig",
+    "MEDIUM": "Mittel",
+    "HIGH": "Hoch"
+  },
+  "ticketSize": {
+    "TINY": "Sehr klein",
+    "SMALL": "Klein",
+    "MEDIUM": "Mittel",
+    "LARGE": "Groß",
+    "HUGE": "Sehr groß"
+  },
+  "ticketStatus": {
+    "OPEN": "Offen",
+    "IN_PROGRESS": "In Bearbeitung",
+    "IN_REVIEW": "Im Review",
+    "RESOLVED": "Gelöst",
+    "CLOSED": "Geschlossen",
+    "ON_HOLD": "Pausiert"
+  },
+  "errors": {
+    "noProjectSelected": "Kein Projekt ausgewählt",
+    "noProjectSelectedForImport": "Kein Projekt für den Import ausgewählt",
+    "failedImportIssues": "Import der Issues fehlgeschlagen",
+    "failedLoadUsers": "Laden der Nutzer fehlgeschlagen",
+    "failedLoadLabels": "Laden der Labels fehlgeschlagen",
+    "failedCreateLabel": "Erstellen des Labels fehlgeschlagen",
+    "failedCreateProject": "Erstellen des Projekts fehlgeschlagen",
+    "failedUpdateProject": "Aktualisieren des Projekts fehlgeschlagen",
+    "failedDeleteProject": "Löschen des Projekts fehlgeschlagen",
+    "failedCreateTicket": "Erstellen des Tickets fehlgeschlagen",
+    "failedSaveTicket": "Speichern des Tickets fehlgeschlagen"
+  }
+}

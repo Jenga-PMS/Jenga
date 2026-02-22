@@ -1,6 +1,9 @@
 import { Accessor, createContext, createSignal, JSXElement, Setter } from "solid-js";
 
 type LayoutContextType = {
+    sidebarOpen: Accessor<boolean>;
+    setSidebarOpen: Setter<boolean>;
+    toggleSidebar: () => void;
     openChat: Accessor<boolean>;
     setOpenChat: Setter<boolean>;
 }
@@ -12,11 +15,14 @@ interface LayoutProviderProps {
 }
 
 export const LayoutProvider = (props: LayoutProviderProps) => {
+    const [sidebarOpen, setSidebarOpen] = createSignal(false);
 
     const [openChat, setOpenChat] = createSignal(false);
 
     const value: LayoutContextType = {
-        openChat,
+        sidebarOpen,
+        setSidebarOpen,
+        toggleSidebar: () => setSidebarOpen((prev) => !prev),        openChat,
         setOpenChat
     };
 

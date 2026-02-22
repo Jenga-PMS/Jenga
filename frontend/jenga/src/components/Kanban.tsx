@@ -2,6 +2,7 @@ import { TableRow, TableCell, Card, CardHeader, CardContent, TableContainer, Pap
 import { useContext, createMemo, For } from "solid-js"
 import { TicketResponseDTO, TicketStatus } from "../api"
 import { ProjectContext } from "../provider/ProjectProvider"
+import { I18nContext } from "../provider/I18nProvider"
 
 interface KanbanItemProps {
     ticket: TicketResponseDTO
@@ -12,7 +13,10 @@ const KanbanItem = (props: KanbanItemProps) => {
 
     return (
         <ListItem
-            sx={{ "border": "1px solid black" }}
+            sx={{
+                "border": "1px solid black",
+                "transform": "translateZ(0)",
+            }}
             draggable
             onDragStart={(event) => {
                 const id = props.ticket.id
@@ -21,7 +25,10 @@ const KanbanItem = (props: KanbanItemProps) => {
                 pCtx?.setSelectedTicket(() => props.ticket)
             }}
         >
-            <ListItemButton onClick={() => pCtx?.setSelectedTicket(props.ticket)}>
+            <ListItemButton
+                onClick={() => pCtx?.setSelectedTicket(props.ticket)}
+                selected={pCtx?.selectedTicket()?.id === props.ticket.id}
+            >
                 {props.ticket.title}
             </ListItemButton>
         </ListItem>
@@ -42,7 +49,7 @@ const StatusCell = (props: KanbanCellProps) => {
         <TableCell
             sx={{ "border": "1px solid black" }}
             onDragOver={(event) => event.preventDefault()}
-            onDrop={(event) => {
+            onDrop={async (event) => {
                 event.preventDefault()
                 const raw = event.dataTransfer?.getData("text/plain")
                 const ticketId = raw ? Number(raw) : NaN
@@ -59,9 +66,13 @@ const StatusCell = (props: KanbanCellProps) => {
                 if (!projectId) return
 
                 const updated: TicketResponseDTO = { ...ticket, status: props.status, assignee: props.username }
-                pCtx?.setTickets((prev) => prev?.map((entry) => (entry.id === ticketId ? updated : entry)) ?? prev)
-                if (pCtx?.selectedTicket()?.id === ticketId) pCtx?.setSelectedTicket(() => updated)
-                void pCtx?.updateTicket(projectId, updated)
+                if (!pCtx?.updateTicket) return
+
+                try {
+                    await pCtx.updateTicket(projectId, updated)
+                } catch (error) {
+                    console.error("Failed to update ticket from kanban drop", error)
+                }
             }}
         >
             <List>
@@ -94,28 +105,33 @@ const Row = (props: RowProps) => {
 }
 
 
-export const Kanban = () => {
+interface KanbanProps {
+    tickets?: TicketResponseDTO[]
+}
+
+export const Kanban = (props: KanbanProps) => {
 
     const pCtx = useContext(ProjectContext)
+    const i18n = useContext(I18nContext)
 
     const tickets = createMemo(() =>
-        Map.groupBy(pCtx?.tickets() ?? [], t => t.assignee ?? "")
+        Map.groupBy(props.tickets ?? pCtx?.tickets() ?? [], t => t.assignee ?? "")
     )
 
     return (
-        <Card>
-            <CardHeader title="Kanban"></CardHeader>
+        <Card id="guide-kanban">
+            <CardHeader title={i18n?.t("kanban.title")}></CardHeader>
             <CardContent>
                 <TableContainer component={Paper}>
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>Dev</TableCell>
-                                <TableCell>Todo</TableCell>
-                                <TableCell>In Progress</TableCell>
-                                <TableCell>In Review</TableCell>
-                                <TableCell>Resolved</TableCell>
-                                <TableCell>Done</TableCell>
+                                <TableCell>{i18n?.t("kanban.dev")}</TableCell>
+                                <TableCell>{i18n?.t("ticketStatus.OPEN")}</TableCell>
+                                <TableCell>{i18n?.t("ticketStatus.IN_PROGRESS")}</TableCell>
+                                <TableCell>{i18n?.t("ticketStatus.IN_REVIEW")}</TableCell>
+                                <TableCell>{i18n?.t("ticketStatus.RESOLVED")}</TableCell>
+                                <TableCell>{i18n?.t("ticketStatus.CLOSED")}</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>

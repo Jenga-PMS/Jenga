@@ -1,0 +1,11 @@
+.sprint-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 22.5rem;
+    gap: 1rem;
+    align-items: start;
+}
+
+.ticket-sidebar {
+    position: sticky;
+    top: 1rem;
+}

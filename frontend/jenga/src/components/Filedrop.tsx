@@ -2,17 +2,19 @@ import { Alert, Box, Button } from "@suid/material"
 import { createSignal, Show, useContext } from "solid-js"
 import { GitHubIssueDTO, ImportResourceService } from "../api"
 import { ProjectContext } from "../provider/ProjectProvider"
+import { I18nContext } from "../provider/I18nProvider"
 
 export const Filedrop = () => {
 
     const pCtx = useContext(ProjectContext)
+    const i18n = useContext(I18nContext)
     const [uploadError, setUploadError] = createSignal<string>("");
 
     const handleFilesUpload = async (files: File[]) => {
         const projectId = pCtx?.selectedProject()?.identifier
         if (!projectId) {
             console.error("No project selected for import");
-            setUploadError("No project selected for import")
+            setUploadError(i18n?.t("errors.noProjectSelectedForImport") ?? "")
             return
         }
 
@@ -27,7 +29,7 @@ export const Filedrop = () => {
             pCtx?.refetchTickets?.()
         } catch (error) {
             console.error("Failed to import issues", error)
-            setUploadError("Failed to import issues");
+            setUploadError(i18n?.t("errors.failedImportIssues") ?? "");
         }
     }
 
@@ -56,7 +58,7 @@ export const Filedrop = () => {
                             e.currentTarget.value = ""
                         }}
                     />
-                    Choose File
+                    {i18n?.t("filedrop.chooseFile")}
                 </Button>
             </Box>
             <Show when={uploadError()}>
