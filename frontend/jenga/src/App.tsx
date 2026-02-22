@@ -11,6 +11,7 @@ import { Footer } from './components/Footer';
 import { useLocation } from '@solidjs/router';
 import { LayoutProvider } from './provider/LayoutProvider';
 import { ChatButton, ChatDialog } from './components/Chat';
+import { AiProvider } from './provider/AiProvider';
 
 const theme = createTheme()
 
@@ -37,6 +38,8 @@ const App = (props: AppProps) => {
           <AuthProvider>
             <UserProvider>
               <ProjectProvider>
+                <AiProvider>
+
                 <AppBar position="static">
                   <Toolbar>
                     <IconButton onClick={() => { setOpen(prev => !prev) }}>
@@ -63,6 +66,7 @@ const App = (props: AppProps) => {
                   </Box>
                 </Stack>
                 <Footer></Footer>
+                </AiProvider>
               </ProjectProvider>
             </UserProvider>
           </AuthProvider>
