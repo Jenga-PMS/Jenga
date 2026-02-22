@@ -92,15 +92,6 @@ services:
       - postgres-data:/var/lib/postgresql/data
       - ./init-dbs.sql:/docker-entrypoint-initdb.d/init-dbs.sql
 
-  prometheus:
-    image: prom/prometheus
-    container_name: prometheus
-    ports:
-      - "9090:9090"
-    environment:
-      DATABASE_URL: postgresql://dbuser:dbpassword@db:5432/prometheus_db
-    networks:
-      - openai-network
 
   pgadmin:
     container_name: pgadmin4_container
