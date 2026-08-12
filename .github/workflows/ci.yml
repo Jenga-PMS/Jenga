@@ -40,6 +40,11 @@ jobs:
       # Die Tests mocken die Google-API, Dummy-Werte genuegen.
       GOOGLE_API_KEY: dummy
       GOOGLE_CSE_ID: dummy
+      # AuthenticationService signiert echte JWTs; ohne Schluessel scheitern
+      # die Auth-Tests mit SRJWT05009. Das Schluesselpaar wird im Step
+      # "Generate JWT test keys" erzeugt.
+      SMALLRYE_JWT_SIGN_KEY_LOCATION: /tmp/jwt-test-privateKey.pem
+      MP_JWT_VERIFY_PUBLICKEY_LOCATION: /tmp/jwt-test-publicKey.pem
     steps:
       - uses: actions/checkout@v4
 
@@ -48,6 +53,11 @@ jobs:
           distribution: temurin
           java-version: "21"
           cache: maven
+
+      - name: Generate JWT test keys
+        run: |
+          openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out /tmp/jwt-test-privateKey.pem
+          openssl rsa -in /tmp/jwt-test-privateKey.pem -pubout -out /tmp/jwt-test-publicKey.pem
 
       - name: Build and run tests
         run: ./mvnw -B verify
