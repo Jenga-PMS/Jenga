@@ -35,6 +35,11 @@ jobs:
       DB_NAME: postgres
       DB_USERNAME: postgres
       DB_PASSWORD: postgres
+      # google.api.key / google.cse.id sind Pflicht-Properties (WebSearchTool);
+      # ohne Wert verweigert Quarkus den Start der @QuarkusTest-Tests.
+      # Die Tests mocken die Google-API, Dummy-Werte genuegen.
+      GOOGLE_API_KEY: dummy
+      GOOGLE_CSE_ID: dummy
     steps:
       - uses: actions/checkout@v4
 
