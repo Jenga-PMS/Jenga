@@ -1,0 +1,92 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend (build & test)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DB_HOST: localhost
+      DB_PORT: "5432"
+      DB_NAME: postgres
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      # google.api.key / google.cse.id sind Pflicht-Properties (WebSearchTool);
+      # ohne Wert verweigert Quarkus den Start der @QuarkusTest-Tests.
+      # Die Tests mocken die Google-API, Dummy-Werte genuegen.
+      GOOGLE_API_KEY: dummy
+      GOOGLE_CSE_ID: dummy
+      # AuthenticationService signiert echte JWTs; ohne Schluessel scheitern
+      # die Auth-Tests mit SRJWT05009. Das Schluesselpaar wird im Step
+      # "Generate JWT test keys" erzeugt.
+      SMALLRYE_JWT_SIGN_KEY_LOCATION: /tmp/jwt-test-privateKey.pem
+      MP_JWT_VERIFY_PUBLICKEY_LOCATION: /tmp/jwt-test-publicKey.pem
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Generate JWT test keys
+        run: |
+          openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out /tmp/jwt-test-privateKey.pem
+          openssl rsa -in /tmp/jwt-test-privateKey.pem -pubout -out /tmp/jwt-test-publicKey.pem
+
+      - name: Build and run tests
+        run: ./mvnw -B verify
+
+  frontend:
+    name: Frontend (build & test)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend/jenga
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/jenga/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      # src/api ist generierter Code (gitignored) und fehlt im frischen
+      # Checkout — ohne diesen Schritt schlagen Build und Tests fehl
+      - name: Generate API client
+        run: npm run gen:api
+
+      - name: Build
+        run: npm run build
+
+      - name: Run tests
+        run: npx vitest run
